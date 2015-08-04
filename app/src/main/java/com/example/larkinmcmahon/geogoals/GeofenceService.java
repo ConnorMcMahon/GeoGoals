@@ -73,7 +73,7 @@ public class GeofenceService extends IntentService implements
         Log.i(TAG, "Connection failed: " + result.getErrorCode());
     }
 
-    public Location getLastLocation(){
+    public Location getLastLocation() {
         return mLastLocation;
     }
 

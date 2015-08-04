@@ -10,12 +10,12 @@
     android:focusableInTouchMode="true"
     android:id="@+id/new_goal_view">
 
-    <AutoCompleteTextView android:layout_width="fill_parent"
+    <EditText android:layout_width="fill_parent"
         android:layout_height="0dp"
         tools:context="com.example.larkinmcmahon.geogoals.GoalLocation"
         android:layout_weight=".1"
-        android:id="@+id/title_box"
-        android:hint="@string/title_hint"
+        android:id="@+id/search"
+        android:hint="@string/location_search_hint"
         android:inputType="textCapWords"
         />
 
