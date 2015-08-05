@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,26 +14,62 @@ import java.util.List;
  * Created by connor on 7/28/15.
  */
 public class Goal implements Parcelable {
+
+    private static int id = 0;
+
     private List<LatLng> mLocations;
     private List<Integer> mRadii;
     private String mTitle;
+    private int mOccurrences;
+    private int mTimeFrame;
+    private String mComments;
+    private int mId;
+    //TODO: need to add start & end date/time - put here or in DB?
 
-    public Goal(String title, List<LatLng> locations, List<Integer> radii) {
+    public Goal() {
+
+    }
+
+    public Goal(int id, String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
+        mOccurrences = occurrences;
+        mTimeFrame = timeFrame;
+        mComments = comments;
+        mId = id;
+    }
+    public Goal(String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments) {
+        mTitle = title;
+        mLocations = locations;
+        mRadii = radii;
+        mOccurrences = occurrences;
+        mTimeFrame = timeFrame;
+        mComments = comments;
+        mId = id;
+        id++;
     }
 
     public Goal(String title){
         mTitle = title;
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
+        mOccurrences = 0;
+        mTimeFrame = 0;
+        mComments = "";
+        mId = id;
+        id++;
     }
 
     private Goal(Parcel in){
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
         mTitle = in.readString();
+        mOccurrences = 0;
+        mTimeFrame = 0;
+        mComments = "";
+        mId = id;
+        id++;
         in.readTypedList(mLocations, LatLng.CREATOR);
         in.readList(mRadii, Integer.class.getClassLoader() );
     }
@@ -53,6 +90,7 @@ public class Goal implements Parcelable {
         mRadii.add(radius);
     }
 
+    public int getID() { return mId; }
     public void setTitle(String title){
         mTitle = title;
     }
@@ -69,6 +107,29 @@ public class Goal implements Parcelable {
         return mRadii;
     }
 
+    public int getOccurance(){
+        return mOccurrences;
+    }
+
+    public void setOccurance(int occurrences){
+        mOccurrences = occurrences;
+    }
+
+    public int getTimeFrame(){
+        return mTimeFrame;
+    }
+
+    public void setTimeFrame(int timeFrame){
+        mTimeFrame = timeFrame;
+    }
+
+    public String getComments(){
+        return mComments;
+    }
+
+    public void setComments(String comments){
+        mComments = comments;
+    }
     //unsure what to put here
     public int describeContents(){
         return 0;
@@ -78,6 +139,10 @@ public class Goal implements Parcelable {
         out.writeString(mTitle);
         out.writeTypedList(mLocations);
         out.writeList(mRadii);
+    }
+
+    public int getOverallID() {
+        return id;
     }
 
 }

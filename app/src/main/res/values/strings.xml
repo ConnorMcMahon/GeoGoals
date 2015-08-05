@@ -8,6 +8,8 @@
     <string name="add_locations_button">Add Locations</string>
     <string name="title_hint">Title</string>
     <string name="location_search_hint">Search for Locations</string>
+    <string name="title_activity_goal_detail">Goal Details</string>
+    <string name="title_activity_goal_edit">Goal Edit</string>
 
     <string-array name="goal_title_suggestions">
         <item>Go to the Gym</item>

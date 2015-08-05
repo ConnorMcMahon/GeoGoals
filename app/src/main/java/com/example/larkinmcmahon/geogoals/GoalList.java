@@ -26,7 +26,7 @@ import java.util.List;
 
 
 public class GoalList extends AppCompatActivity implements
-         ResultCallback<Status> {
+        ResultCallback<Status> {
     private final String TAG = "GOAL_LIST";
     private PendingIntent mGeofencePendingIntent;
     private ArrayList<Geofence> mGeofenceList;
@@ -35,7 +35,7 @@ public class GoalList extends AppCompatActivity implements
     private GeofenceService mGeofenceService;
     private GoalListFragment mGoalList;
     private ArrayList<Goal> mGoals;
-
+    private GoalDatabaseHelper mDB;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -80,7 +80,17 @@ public class GoalList extends AppCompatActivity implements
 
         mGeofencePendingIntent = null;
 
-        mGoals = new ArrayList<Goal>();
+        mDB = new GoalDatabaseHelper(getApplicationContext());
+
+        if(mDB.getAllGoals().size() == 0) {
+            Goal newGoal = new Goal("testing", null, null, 0, 1, "comment");
+            mDB.addGoals(newGoal);
+        }
+
+        mGoals = mDB.getAllGoals();
+
+//        mGoals.add(new Goal("test goal", null, null, 0, 0, ""));
+
         mGeofenceList = new ArrayList<Geofence>();
 
 
@@ -95,6 +105,8 @@ public class GoalList extends AppCompatActivity implements
     @Override
     protected void onResume(){
         super.onResume();
+        //mGoals = mDB.getAllGoals();
+
         Intent intent = new Intent(this, GeofenceService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
