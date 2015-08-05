@@ -8,11 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.util.List;
 
 
@@ -24,11 +22,11 @@ public class GoalEdit extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_edit);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.goalEditContainer, new GoalEditFragment())
-                    .commit();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.goalEditContainer, new GoalEditFragment())
+//                    .commit();
+//        }
     }
 
 
@@ -58,7 +56,7 @@ public class GoalEdit extends AppCompatActivity{
         int mUpdateGoalStatusInt = 0;
         String mUpdateGoalStatusString = null;
 
-        EditText mEditTitle = (EditText)findViewById(R.id.activity_goal_edit_title);
+        EditText mEditTitle = (EditText)findViewById(R.id.goal_title_editbox);
         //TODO: make fields for other class objects and include them here
 
         mTitle = mEditTitle.getText().toString();

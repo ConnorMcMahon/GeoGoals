@@ -25,7 +25,7 @@ public class GoalDetailFragment extends Fragment{
 
         Intent intent = getActivity().getIntent();
         if (intent != null) {
-            if(intent.hasExtra("intentType")) {
+            if(intent.hasExtra("intentType") && intent.getStringExtra("intentType")!=null) {
                 if (intent.getStringExtra("intentType").equals("SQLUpdate")) {
                     if (intent.getStringExtra("intentMsg").equals("Success")) {
                         Toast.makeText(getActivity(),

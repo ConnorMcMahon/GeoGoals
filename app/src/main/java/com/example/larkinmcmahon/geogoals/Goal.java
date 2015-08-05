@@ -65,13 +65,14 @@ public class Goal implements Parcelable {
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
         mTitle = in.readString();
-        mOccurrences = 0;
-        mTimeFrame = 0;
-        mComments = "";
-        mId = id;
-        id++;
         in.readTypedList(mLocations, LatLng.CREATOR);
         in.readList(mRadii, Integer.class.getClassLoader() );
+        mOccurrences = in.readInt();
+        mTimeFrame = in.readInt();
+        mId = in.readInt();
+        mComments = in.readString();
+
+
     }
 
     public static final Parcelable.Creator<Goal> CREATOR
@@ -139,6 +140,12 @@ public class Goal implements Parcelable {
         out.writeString(mTitle);
         out.writeTypedList(mLocations);
         out.writeList(mRadii);
+        out.writeInt(mOccurrences);
+        out.writeInt(mTimeFrame);
+        out.writeInt(mId);
+        out.writeString(mComments);
+
+
     }
 
     public int getOverallID() {

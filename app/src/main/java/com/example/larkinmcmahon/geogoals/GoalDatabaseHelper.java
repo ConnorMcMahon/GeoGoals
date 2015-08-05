@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by djflash on 8/2/15.
@@ -21,7 +19,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "goalsManagaer";
+    private static final String DATABASE_NAME = "goalsManager";
 
     //  table name
     private static final String TABLE_Goals = "goals";
@@ -29,7 +27,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     //  Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_GOALNAME = "name";
-    private static final String KEY_OCCURANCES = "occurances";
+    private static final String KEY_OCCURRENCES = "occurrences";
     private static final String KEY_TIMEFRAME = "timeFrame";
     private static final String KEY_COMMENTS = "comments";
 
@@ -42,7 +40,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_GOALS_TABLE = "CREATE TABLE " + TABLE_Goals + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_GOALNAME + " TEXT,"
-                + KEY_OCCURANCES + " TEXT,"
+                + KEY_OCCURRENCES + " TEXT,"
                 + KEY_TIMEFRAME + " TEXT,"
                 + KEY_COMMENTS + " TEXT" + ")";
         db.execSQL(CREATE_GOALS_TABLE);
@@ -69,7 +67,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_ID, goal.getID());
         values.put(KEY_GOALNAME, goal.getTitle()); // Name
-        values.put(KEY_OCCURANCES, goal.getOccurance());
+        values.put(KEY_OCCURRENCES, goal.getOccurance());
         values.put(KEY_TIMEFRAME, goal.getTimeFrame());
         values.put(KEY_COMMENTS, goal.getComments());
 
@@ -83,7 +81,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_Goals,
-                new String[] { KEY_ID, KEY_GOALNAME, KEY_OCCURANCES, KEY_TIMEFRAME, KEY_COMMENTS },
+                new String[] { KEY_ID, KEY_GOALNAME, KEY_OCCURRENCES, KEY_TIMEFRAME, KEY_COMMENTS },
                 KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
@@ -145,7 +143,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_GOALNAME, goal.getTitle());
-        values.put(KEY_OCCURANCES, goal.getOccurance());
+        values.put(KEY_OCCURRENCES, goal.getOccurance());
         values.put(KEY_TIMEFRAME, goal.getTimeFrame());
         values.put(KEY_COMMENTS, goal.getComments());
 

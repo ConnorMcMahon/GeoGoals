@@ -11,6 +11,12 @@
     <string name="title_activity_goal_detail">Goal Details</string>
     <string name="title_activity_goal_edit">Goal Edit</string>
 
+
+    <!-- Labels -->
+    <string name="goal_title_label">Title</string>
+    <string name="goal_comments_label">Description</string>
+
+
     <string-array name="goal_title_suggestions">
         <item>Go to the Gym</item>
         <item>Go to Class</item>
