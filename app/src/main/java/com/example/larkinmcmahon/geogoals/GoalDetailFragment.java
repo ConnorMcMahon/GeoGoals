@@ -1,7 +1,9 @@
 package com.example.larkinmcmahon.geogoals;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +23,11 @@ public class GoalDetailFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_goal_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_goal_detail, container, false);
 
         Intent intent = getActivity().getIntent();
         if (intent != null) {
-            if(intent.hasExtra("intentType") && intent.getStringExtra("intentType")!=null) {
+            if(intent.hasExtra("intentType")) {
                 if (intent.getStringExtra("intentType").equals("SQLUpdate")) {
                     if (intent.getStringExtra("intentMsg").equals("Success")) {
                         Toast.makeText(getActivity(),
@@ -46,14 +48,27 @@ public class GoalDetailFragment extends Fragment{
 //                Log.d("GoalDetailFragmentIdVal", String.valueOf(idnum));
             //}
             if(intent.hasExtra("dbID")) {
-                GoalDatabaseHelper db = new GoalDatabaseHelper(getActivity().getApplicationContext());
+                String projection[] = { GoalDatabaseHelper.KEY_GOALNAME };
                 int dbid = intent.getIntExtra("dbID", 0);
-                goalSelected = db.getGoal(dbid);
-                ((TextView) rootView.findViewById(R.id.activity_goal_detail_title_text))
-                    .setText(goalSelected.getTitle());
+                Cursor cursor = getActivity().getContentResolver().query(
+                        Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
+                                            String.valueOf(dbid)),projection,null,null,null);
+                if(cursor.moveToFirst()) {
+                    String goalName = cursor.getString(0);
+                    ((TextView) rootView.findViewById(R.id.fragment_goal_detail_title_text))
+                        .setText(goalName);
+                }
+                cursor.close();
 
-                int idnum = goalSelected.getOverallID();
-                Log.d("GoalDetailFragmentIdVal", String.valueOf(idnum));
+
+//                GoalDatabaseHelper db = new GoalDatabaseHelper(getActivity().getApplicationContext());
+//                int dbid = intent.getIntExtra("dbID", 0);
+//                goalSelected = db.getGoal(dbid);
+//                ((TextView) rootView.findViewById(R.id.fragment_goal_detail_title_text))
+//                    .setText(goalSelected.getTitle());
+//
+//                int idnum = goalSelected.getOverallID();
+//                Log.d("GoalDetailFragmentIdVal", String.valueOf(idnum));
             }
         }
 

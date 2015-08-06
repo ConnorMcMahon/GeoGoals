@@ -18,6 +18,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat" >
+        <provider
+            android:name="com.example.larkinmcmahon.geogoals.GoalsProvider"
+            android:authorities="com.example.larkinmcmahon.geogoals"/>
+
         <service
             android:name=".GeofenceService"
             android:enabled="true" />
@@ -31,31 +35,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".GoalDetail"
             android:label="@string/title_activity_goal_detail"
             android:parentActivityName=".GoalList" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
-
         <activity
             android:name=".GoalEdit"
             android:label="@string/title_activity_goal_edit"
             android:parentActivityName=".GoalDetail" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
@@ -64,7 +63,10 @@
             android:name=".GoalLocation"
             android:label="@string/title_activity_goal_location" >
         </activity>
-
+        <activity
+            android:name=".AddGoal"
+            android:label="Add Goal" >
+        </activity>
     </application>
 
 </manifest>

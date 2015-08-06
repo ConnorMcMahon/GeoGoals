@@ -2,10 +2,12 @@ package com.example.larkinmcmahon.geogoals;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.io.Serializable;
 
@@ -16,11 +18,11 @@ public class GoalDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_detail);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detailContainer, new GoalDetailFragment())
-                    .commit();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.detailContainer, new GoalDetailFragment())
+//                    .commit();
+//        }
     }
 
 
@@ -41,13 +43,19 @@ public class GoalDetail extends AppCompatActivity {
         if (id == R.id.action_editGoal) {
             Intent currentIntent = getIntent();
 //            GoalDetailFragment detail = new GoalDetailFragment();
-//            Goal passingGoal = (Goal)currentIntent.getParcelableExtra("selectedGoal");
+//            Goal passingGoal = (Goal)currentIntent.getSerializableExtra("selectedGoal");
             int dbid = currentIntent.getIntExtra("dbid",0);
             Intent intent = new Intent(this, GoalEdit.class)
 //                    .putExtra("passingGoal", (Serializable)passingGoal);
-                      .putExtra("dbid",dbid);
+                      .putExtra("dbid", dbid);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void showTimePickerDialog(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
 }

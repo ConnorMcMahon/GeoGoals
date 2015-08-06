@@ -2,11 +2,15 @@ package com.example.larkinmcmahon.geogoals;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -21,12 +25,13 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class GoalList extends AppCompatActivity implements
-        ResultCallback<Status> {
+         ResultCallback<Status> {
     private final String TAG = "GOAL_LIST";
     private PendingIntent mGeofencePendingIntent;
     private ArrayList<Geofence> mGeofenceList;
@@ -83,8 +88,52 @@ public class GoalList extends AppCompatActivity implements
         mDB = new GoalDatabaseHelper(getApplicationContext());
 
         if(mDB.getAllGoals().size() == 0) {
-            Goal newGoal = new Goal("testing", null, null, 0, 1, "comment");
-            mDB.addGoals(newGoal);
+            List<LatLng> latlns = new ArrayList<>();
+            latlns.add(new LatLng(10, 15));
+
+            List<Integer> ints = new ArrayList<Integer>();
+            ints.add(3);
+            Goal newGoal = new Goal("testing", latlns, ints, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
+
+            ContentValues values = new ContentValues();
+            values.put(GoalDatabaseHelper.KEY_ID,newGoal.getID());
+            values.put(GoalDatabaseHelper.KEY_GOALNAME,newGoal.getTitle());
+            values.put(GoalDatabaseHelper.KEY_OCCURANCES,newGoal.getOccurance());
+            values.put(GoalDatabaseHelper.KEY_TIMEFRAME, newGoal.getTimeFrame());
+            values.put(GoalDatabaseHelper.KEY_COMMENTS,newGoal.getComments());
+            values.put(GoalDatabaseHelper.KEY_STARTDATE,newGoal.getStartDate());
+            values.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal.getEndDate());
+            values.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal.getStartTime());
+            values.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal.getEndTime());
+
+//            values.put(GoalDatabaseHelper.KEY_LAT),
+            Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI,values);
+
+            ArrayList<ContentValues> locationInformation = new ArrayList<ContentValues>();
+            ContentValues a = new ContentValues();
+            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
+            a.put(GoalDatabaseHelper.KEY_LAT, 10);
+            a.put(GoalDatabaseHelper.KEY_LONG, 20);
+            a.put(GoalDatabaseHelper.KEY_RADII, 50);
+
+            ContentValues b = new ContentValues();
+            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
+            b.put(GoalDatabaseHelper.KEY_LAT, 10);
+            b.put(GoalDatabaseHelper.KEY_LONG, 20);
+            b.put(GoalDatabaseHelper.KEY_RADII, 50);
+
+            locationInformation.add(a);
+            locationInformation.add(b);
+            for(int i = 0; i < locationInformation.size(); i++) {
+                getContentResolver().insert(GoalsProvider.LOCATION_URI,locationInformation.get(i));
+            }
+
+//            Goal newGoal = new Goal("testing2", latlns, ints, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable("goal",(Parcelable)newGoal);
+//
+//            getContentResolver().call(GoalsProvider.CONTENT_URI, "addGoals", null, bundle);
+            //mDB.addGoals(newGoal);
         }
 
         mGoals = mDB.getAllGoals();
@@ -105,7 +154,6 @@ public class GoalList extends AppCompatActivity implements
     @Override
     protected void onResume(){
         super.onResume();
-        //mGoals = mDB.getAllGoals();
 
         Intent intent = new Intent(this, GeofenceService.class);
         startService(intent);
@@ -120,7 +168,7 @@ public class GoalList extends AppCompatActivity implements
     }
 
     public void addGoalButtonClick(){
-        Intent intent = new Intent(this, GoalLocation.class);
+        Intent intent = new Intent(this, AddGoal.class);
         int requestCode = 1;
         this.startActivityForResult(intent, requestCode);
     }
@@ -135,6 +183,10 @@ public class GoalList extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        else if (id == R.id.action_add_goal) {
+            Intent intent = new Intent(this, GoalAdd.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -1,15 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/detailContainer"
-    android:weightSum="1">
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:name="com.example.larkinmcmahon.geogoals.GoalDetailFragment"-->
+    <!--android:id="@+id/detailContainer"-->
+    <!--tools:layout="@layout/fragment_goal_detail"-->
+    <!--android:weightSum="1">-->
 
-    <TextView
-        android:layout_width="89dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/activity_goal_detail_title_text"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.06" />
-</LinearLayout>
+<!--</LinearLayout>-->
+
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/fragment_goal_detail"
+android:name="com.example.larkinmcmahon.geogoals.GoalDetailFragment"
+tools:layout="@layout/fragment_goal_detail"
+android:layout_width="match_parent"
+android:layout_height="match_parent" />

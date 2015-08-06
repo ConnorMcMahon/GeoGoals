@@ -24,13 +24,17 @@ public class Goal implements Parcelable {
     private int mTimeFrame;
     private String mComments;
     private int mId;
-    //TODO: need to add start & end date/time - put here or in DB?
+    private String mStartDate;
+    private String mStartTime;
+    private String mEndDate;
+    private String mEndTime;
+
 
     public Goal() {
 
     }
 
-    public Goal(int id, String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments) {
+    public Goal(int id, String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
@@ -38,8 +42,12 @@ public class Goal implements Parcelable {
         mTimeFrame = timeFrame;
         mComments = comments;
         mId = id;
+        mStartDate = startD;
+        mEndDate = endD;
+        mStartTime = startT;
+        mEndTime = endT;
     }
-    public Goal(String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments) {
+    public Goal(String title, List<LatLng> locations, List<Integer> radii, int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
@@ -47,6 +55,10 @@ public class Goal implements Parcelable {
         mTimeFrame = timeFrame;
         mComments = comments;
         mId = id;
+        mStartDate = startD;
+        mEndDate = endD;
+        mStartTime = startT;
+        mEndTime = endT;
         id++;
     }
 
@@ -58,6 +70,10 @@ public class Goal implements Parcelable {
         mTimeFrame = 0;
         mComments = "";
         mId = id;
+        mStartDate = "";
+        mEndDate = "";
+        mStartTime = "";
+        mEndTime = "";
         id++;
     }
 
@@ -65,18 +81,21 @@ public class Goal implements Parcelable {
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
         mTitle = in.readString();
-        in.readTypedList(mLocations, LatLng.CREATOR);
-        in.readList(mRadii, Integer.class.getClassLoader() );
         mOccurrences = in.readInt();
         mTimeFrame = in.readInt();
-        mId = in.readInt();
         mComments = in.readString();
-
-
+        mId = id;
+        mStartDate = in.readString();
+        mEndDate = in.readString();
+        mStartTime = in.readString();
+        mEndTime = in.readString();
+        //id++;
+        in.readTypedList(mLocations, LatLng.CREATOR);
+        in.readList(mRadii, Integer.class.getClassLoader() );
     }
 
-    public static final Parcelable.Creator<Goal> CREATOR
-            = new Parcelable.Creator<Goal>() {
+    public static final Creator<Goal> CREATOR
+            = new Creator<Goal>() {
         public Goal createFromParcel(Parcel in) {
             return new Goal(in);
         }
@@ -131,6 +150,23 @@ public class Goal implements Parcelable {
     public void setComments(String comments){
         mComments = comments;
     }
+
+    public void setStartDate(String start) {mStartDate = start;}
+
+    public String getStartDate() {return mStartDate;}
+
+    public void setEndDate(String end) {mEndDate = end;}
+
+    public String getEndDate() {return mEndDate;}
+
+    public void setStartTime(String start) {mStartTime = start;}
+
+    public String getStartTime() {return mStartTime;}
+
+    public void setEndTime(String end) {mEndTime = end;}
+
+    public String getEndTime() {return mEndTime;}
+
     //unsure what to put here
     public int describeContents(){
         return 0;
@@ -140,12 +176,6 @@ public class Goal implements Parcelable {
         out.writeString(mTitle);
         out.writeTypedList(mLocations);
         out.writeList(mRadii);
-        out.writeInt(mOccurrences);
-        out.writeInt(mTimeFrame);
-        out.writeInt(mId);
-        out.writeString(mComments);
-
-
     }
 
     public int getOverallID() {

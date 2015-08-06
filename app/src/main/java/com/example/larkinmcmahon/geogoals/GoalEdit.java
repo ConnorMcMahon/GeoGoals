@@ -1,6 +1,9 @@
 package com.example.larkinmcmahon.geogoals;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,9 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -61,21 +66,15 @@ public class GoalEdit extends AppCompatActivity{
 
         mTitle = mEditTitle.getText().toString();
 
-        GoalDatabaseHelper db = new GoalDatabaseHelper(getApplicationContext());
-        int c = db.getGoalCount();
-        Log.d(TAG,String.valueOf(c));
-
         Intent currentIntent = getIntent();
         if (currentIntent != null && currentIntent.hasExtra("dbid")) {
-//            mCurrentGoal= (Goal)currentIntent.getSerializableExtra("passingGoal");
-
-            //newGoal = new Goal(mId,mTitle,null,null,0,1,"comments");
-            mCurrentGoal.setTitle(mTitle);
-            //TODO: put other fields in this Goal creation
-
-//            Goal test = db.getGoal(2);
-            db.getAllGoals();
-            mUpdateGoalStatusInt = db.updateGoal(mCurrentGoal);
+            int dbid = currentIntent.getIntExtra("dbid",-1);
+            String projection[] = {GoalDatabaseHelper.KEY_GOALNAME };
+            ContentValues values = new ContentValues();
+            values.put(GoalDatabaseHelper.KEY_GOALNAME, mTitle);
+            mUpdateGoalStatusInt = getContentResolver().update(
+                    Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
+                            String.valueOf(dbid)),values,null,projection);
         }
 
         if(mUpdateGoalStatusInt > 0){
@@ -87,7 +86,7 @@ public class GoalEdit extends AppCompatActivity{
 
         Intent intent = new Intent(this, GoalDetail.class)
                 .putExtra("dbID",currentIntent.getIntExtra("dbid",0))
-                .putExtra("intentType","SQLUpdate")
+                .putExtra("intentType", "SQLUpdate")
                 .putExtra("intentMsg",mUpdateGoalStatusString);
         startActivity(intent);
     }

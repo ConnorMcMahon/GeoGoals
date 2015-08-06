@@ -1,8 +1,7 @@
 package com.example.larkinmcmahon.geogoals;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -41,7 +41,7 @@ import java.util.Locale;
  * Created by connor on 7/30/15.
  */
 public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
-    private MapFragment fragment;
+    private SupportMapFragment fragment;
     private Context mContext;
     private GeofenceService mGeofenceService;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -121,11 +121,10 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        FragmentManager manager = getFragmentManager();
-        fragment = (MapFragment) manager.findFragmentById(R.id.map);
+        fragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
         if(fragment == null) {
-            fragment = MapFragment.newInstance();
-            manager.beginTransaction().replace(R.id.map, fragment).commit();
+            fragment = SupportMapFragment.newInstance();
+            getFragmentManager().beginTransaction().replace(R.id.map, fragment).commit();
         }
 
 
@@ -141,16 +140,19 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
 
 
                 Location lastLocation = mGeofenceService.getLastLocation();
-                LatLng coords = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                if (lastLocation != null) {
+                    LatLng coords = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-                CameraPosition camPos = new CameraPosition.Builder()
-                        .target(coords)
-                        .zoom(17)
-                        .bearing(lastLocation.getBearing())
-                        .build();
+                    CameraPosition camPos = new CameraPosition.Builder()
+                            .target(coords)
+                            .zoom(17)
+                            .bearing(lastLocation.getBearing())
+                            .build();
 
-                CameraUpdate zoomIn = CameraUpdateFactory.newCameraPosition(camPos);
-                mMap.moveCamera(zoomIn);
+                    CameraUpdate zoomIn = CameraUpdateFactory.newCameraPosition(camPos);
+                    mMap.moveCamera(zoomIn);
+
+                }
                 setUpMap();
             }
 
