@@ -73,13 +73,13 @@
         android:id="@+id/goal_comments_editbox"
         android:layout_gravity="center_horizontal"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Goal"
-        android:id="@+id/saveButton"
-        android:layout_gravity="center_horizontal"
-        android:clickable="true"
-        android:enabled="true"
-        android:onClick="onClickSubmitGoal" />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Save Goal"-->
+        <!--android:id="@+id/saveButton"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:clickable="true"-->
+        <!--android:enabled="true"-->
+        <!--android:onClick="onClickSubmitGoal" />-->
 </LinearLayout>

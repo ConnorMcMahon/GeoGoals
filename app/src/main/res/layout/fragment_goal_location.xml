@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:clickable="true"
     android:focusableInTouchMode="true"
-    android:id="@+id/new_goal_view">
+    android:id="@+id/fragment_goal_location">
 
     <EditText android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -32,19 +32,18 @@
             android:layout_height="match_parent" android:id="@+id/map"
             tools:context="com.example.larkinmcmahon.geogoals.GoalLocation"
             android:name="com.google.android.gms.maps.MapFragment"
-
             />
 
     </RelativeLayout>
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:id = "@+id/add_locations"
-        android:text = "@string/add_locations_button"
-        tools:context="com.example.larkinmcmahon.geogoals.GoalLocation"
-        android:onClick="onClickSubmitGoal"
-        android:layout_weight=".1"/>
+    <!--<Button-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:id = "@+id/add_locations"-->
+        <!--android:text = "@string/add_locations_button"-->
+        <!--tools:context="com.example.larkinmcmahon.geogoals.GoalLocation"-->
+        <!--android:onClick="onClickSubmitGoal"-->
+        <!--android:layout_weight=".1"/>-->
 
 </LinearLayout>
 

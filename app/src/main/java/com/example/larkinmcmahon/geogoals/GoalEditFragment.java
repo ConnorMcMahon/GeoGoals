@@ -107,4 +107,36 @@ public class GoalEditFragment extends Fragment{
 
         }
     }
+
+    public String getTitle(){
+        String title = ((TextView) getActivity().findViewById(R.id.goal_title_editbox)).getText().toString();
+        if(title == null){
+            return "";
+        }
+        return title;
+    }
+
+    public String getComment(){
+        String comment = ((TextView) getActivity().findViewById(R.id.goal_comments_editbox)).getText().toString();
+        if(comment == null){
+            return "";
+        }
+        return comment;
+    }
+
+    public int getOccurences(){
+        String occurrences = ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox)).getText().toString();
+        if(occurrences == null){
+            return -1;
+        }
+        return Integer.parseInt(occurrences);
+    }
+
+    public int getTimeFrame(){
+        String timeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox)).getText().toString();
+        if(timeframe == null){
+            return -1;
+        }
+        return Integer.parseInt(timeframe);
+    }
 }

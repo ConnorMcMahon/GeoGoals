@@ -50,6 +50,8 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     private View mRootView;
     private List<Marker> mMarkers;
     final private double SEARCH_DISTANCE = .3; //Around 30 km
+    private List<LatLng> mCoords;
+    final private int RADIUS = 1000;
 
     private ServiceConnection mConnection;
 
@@ -72,6 +74,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
 
         mContext = getActivity();
         mMarkers = new ArrayList<Marker>();
+        mCoords = new ArrayList<LatLng>();
 
         mRootView = inflater.inflate(R.layout.fragment_goal_location, container, false);
 
@@ -111,6 +114,18 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
 
         return mRootView;
 
+    }
+
+    public List<LatLng> getLocations() {
+        return mCoords;
+    }
+
+    public List<Integer> getRadii(){
+        List<Integer> radii = new ArrayList<Integer>();
+        for(int i = 0; i < mCoords.size(); i++){
+            radii.add(RADIUS);
+        }
+        return radii;
     }
 
     private void hideKeyboard(View view) {
@@ -194,8 +209,9 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng coords) {
-                Goal goal = ((GoalLocation) mContext).getGoal();
-                goal.addGeofence(coords, 50);
+                Goal goal = ((AddGoal) mContext).getGoal();
+                goal.addGeofence(coords, RADIUS);
+                mCoords.add(coords);
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(coords)
                         .draggable(true));
@@ -262,7 +278,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
             }
             LatLngBounds bounds = builder.build();
 
-            int padding = 5; //padding from edge of map
+            int padding = 10; //padding from edge of map
             CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mMap.animateCamera(update);
         }

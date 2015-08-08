@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +60,7 @@ public class AddGoal extends ActionBarActivity {
             }
 
             public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){
-
+                mViewPager.setCurrentItem(tab.getPosition());
             }
         };
 
@@ -86,12 +89,16 @@ public class AddGoal extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.submit_goal:
+                onClickSubmitGoal();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
     public class AddGoalPagerAdapter extends FragmentPagerAdapter {
@@ -118,12 +125,43 @@ public class AddGoal extends ActionBarActivity {
 
     }
 
-    public void onClickSubmitGoal(View v){
+    public void onClickSubmitGoal(){
         Intent intent = new Intent();
+        FragmentManager fm = getSupportFragmentManager();
+        GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
+        if(details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
+            Toast errorMessage = Toast.makeText(mContext, "Required Details missing", Toast.LENGTH_SHORT);
+            errorMessage.show();
+            return;
+        }
+
+        mGoal.setTimeFrame(details.getTimeFrame());
+        mGoal.setComments(details.getComment());
+        mGoal.setTitle(details.getTitle());
+        mGoal.setOccurance(details.getOccurences());
+
+        GoalLocationFragment locationData = (GoalLocationFragment) fm.findFragmentById(R.id.fragment_goal_location);
+        if(locationData.getLocations().size() == 0){
+            Toast errorMessage = Toast.makeText(mContext, "Requires at least one location", Toast.LENGTH_SHORT);
+            errorMessage.show();
+            return;
+        }
+
+        List<LatLng> locations = locationData.getLocations();
+        List<Integer> radii = locationData.getRadii();
+
+        for(int i = 0; i < locations.size(); i++){
+            mGoal.addGeofence(locations.get(i), radii.get(i));
+        }
+
         intent.putExtra("goal", mGoal); //eric comment - wasn't compiling
         setResult(RESULT_OK, intent);
         finish();
         Log.v(TAG, "Sending goal back to GoalList");
+    }
+
+    public Goal getGoal(){
+        return mGoal;
     }
 
 
