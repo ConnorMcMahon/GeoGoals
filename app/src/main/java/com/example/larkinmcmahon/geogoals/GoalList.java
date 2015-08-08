@@ -93,7 +93,11 @@ public class GoalList extends AppCompatActivity implements
 
             List<Integer> ints = new ArrayList<Integer>();
             ints.add(3);
-            Goal newGoal = new Goal("testing", latlns, ints, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
+
+            List<Integer> ids = new ArrayList<Integer>();
+            ids.add(1);
+
+            Goal newGoal = new Goal("testing", latlns, ints, ids, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
 
             ContentValues values = new ContentValues();
             values.put(GoalDatabaseHelper.KEY_ID,newGoal.getID());
@@ -244,6 +248,7 @@ public class GoalList extends AppCompatActivity implements
                             .setExpirationDuration(1000 * 3600 * 24 * 7)
                             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER
                                     | Geofence.GEOFENCE_TRANSITION_EXIT)
+                            .setLoiteringDelay(10000) //10 seconds for testing purposes
                             .build()
             );
         }

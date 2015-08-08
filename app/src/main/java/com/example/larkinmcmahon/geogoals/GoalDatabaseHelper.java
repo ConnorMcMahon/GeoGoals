@@ -38,11 +38,13 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_ENDDATE = "endDate";
     public static final String KEY_STARTTIME = "startTime";
     public static final String KEY_ENDTIME = "endTime";
+    public static final String KEY_CURRENTOCCURENCES = "currentOccurences";
 
     public static final String KEY_COORID = "coorID";
     public static final String KEY_LAT = "lat";
     public static final String KEY_LONG = "long";
     public static final String KEY_RADII = "radii";
+    public static final String KEY_IDS = "geofence_ids";
 
     public GoalDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -60,14 +62,16 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                 + KEY_STARTDATE + " TEXT,"
                 + KEY_ENDDATE + " TEXT,"
                 + KEY_STARTTIME + " TEXT,"
-                + KEY_ENDTIME + " TEXT" + ")";
+                + KEY_ENDTIME + " TEXT,"
+                + KEY_CURRENTOCCURENCES + " TEXT" + ")";
 
         String CREATE_LOCATIONS_TABLE = "CREATE TABLE " + TABLE_LOCATIONS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_COORID + " INTEGER,"
                 + KEY_LAT + " REAL,"
                 + KEY_LONG + " REAL,"
-                + KEY_RADII + " INTEGER" + ")";
+                + KEY_RADII + " INTEGER,"
+                + KEY_IDS + " INTEGER" + ")";
 
         db.execSQL(CREATE_LOCATIONS_TABLE);
         db.execSQL(CREATE_GOALS_TABLE);
@@ -95,6 +99,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         ContentValues locationValues = new ContentValues();
         List<LatLng> locations = goal.getLocations();
         List<Integer> radii = goal.getRadii();
+        List<Integer> geofenceIds = goal.getIDs();
         int id = goal.getID();
 
         //goals table
@@ -107,6 +112,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         goalValues.put(KEY_ENDDATE, goal.getEndDate());
         goalValues.put(KEY_STARTTIME, goal.getStartTime());
         goalValues.put(KEY_ENDTIME, goal.getEndTime());
+        goalValues.put(KEY_CURRENTOCCURENCES, goal.getCurrentOccurences());
 
         // Inserting Row
         long insertVal = db.insert(TABLE_Goals, null, goalValues);
@@ -117,6 +123,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
             locationValues.put(KEY_LAT, locations.get(i).latitude);
             locationValues.put(KEY_LONG, locations.get(i).longitude);
             locationValues.put(KEY_RADII, radii.get(i));
+            locationValues.put(KEY_IDS, geofenceIds.get(i));
 
             // Inserting Row
             long insertLocationVal = db.insert(TABLE_LOCATIONS, null, locationValues);
@@ -131,7 +138,8 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_Goals,
-                new String[] { KEY_ID, KEY_GOALNAME, KEY_OCCURANCES, KEY_TIMEFRAME, KEY_COMMENTS, KEY_STARTDATE, KEY_ENDDATE, KEY_STARTTIME, KEY_ENDTIME },
+                new String[] { KEY_ID, KEY_GOALNAME, KEY_OCCURANCES, KEY_TIMEFRAME, KEY_COMMENTS, KEY_STARTDATE, KEY_ENDDATE,
+                        KEY_STARTTIME, KEY_ENDTIME, KEY_CURRENTOCCURENCES },
                 KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
@@ -143,13 +151,15 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(1),
                 (List<LatLng>)locationInformation.get(0),
                 (List<Integer>)locationInformation.get(1),
+                (List<Integer>)locationInformation.get(2),
                 cursor.getInt(2),
                 cursor.getInt(3),
                 cursor.getString(4),
                 cursor.getString(5),
                 cursor.getString(6),
                 cursor.getString(7),
-                cursor.getString(8)
+                cursor.getString(8),
+                cursor.getInt(9)
         );
         return goal;
     }
@@ -158,9 +168,10 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         List<Object> returnLists = new ArrayList<Object>();
         List<LatLng> locations = new ArrayList<LatLng>();
         List<Integer> radii = new ArrayList<Integer>();
+        List<Integer> ids = new ArrayList<Integer>();
 
         Cursor cursor = db.query(TABLE_LOCATIONS,
-                new String[]{KEY_COORID, KEY_LAT, KEY_LONG, KEY_RADII},
+                new String[]{KEY_COORID, KEY_LAT, KEY_LONG, KEY_RADII, KEY_IDS},
                 KEY_COORID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -172,10 +183,12 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
 
                 locations.add(latlng);
                 radii.add(radius);
+                ids.add(cursor.getInt(4));
             } while (cursor.moveToNext());
         }
         returnLists.add(locations);
         returnLists.add(radii);
+        returnLists.add(ids);
         return returnLists;
     }
 
@@ -197,13 +210,15 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(1),
                         (List<LatLng>)locationInformation.get(0),
                         (List<Integer>)locationInformation.get(1),
+                        (List<Integer>)locationInformation.get(2),
                         cursor.getInt(2),
                         cursor.getInt(3),
                         cursor.getString(4),
                         cursor.getString(5),
                         cursor.getString(6),
                         cursor.getString(7),
-                        cursor.getString(8)
+                        cursor.getString(8),
+                        cursor.getInt(9)
                 );
 
 
@@ -236,6 +251,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_OCCURANCES, goal.getOccurance());
         values.put(KEY_TIMEFRAME, goal.getTimeFrame());
         values.put(KEY_COMMENTS, goal.getComments());
+        values.put(KEY_CURRENTOCCURENCES, goal.getCurrentOccurences());
 
         // updating row
         int updateStatus = db.update(TABLE_Goals, values, KEY_ID + " = ?",

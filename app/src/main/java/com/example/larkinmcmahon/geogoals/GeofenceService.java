@@ -15,6 +15,7 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeofenceService extends IntentService implements
@@ -99,12 +100,36 @@ public class GeofenceService extends IntentService implements
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
+            GoalDatabaseHelper dbHelper = new GoalDatabaseHelper(getApplicationContext());
 
+            ArrayList<Goal> goals = dbHelper.getAllGoals();
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
-            List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+
+            List<Goal> triggeredGoals = new ArrayList<Goal>();
+
+            for(int i = 0; i < triggeringGeofences.size(); i++){
+                for(int j = 0; j < goals.size(); j++){
+                    List<Integer> ids = goals.get(j).getIDs();
+                    for(int k = 0; k < ids.size(); k++){
+                        Geofence fence = triggeringGeofences.get(i);
+                        fence.getRequestId();
+                        if(ids.get(k) == Integer.parseInt(fence.getRequestId())){
+                            triggeredGoals.add(goals.get(j));
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(int i = 0; i < triggeredGoals.size(); i++){
+                Goal goal = triggeredGoals.get(i);
+                goal.incrementOccurences();
+                dbHelper.updateGoal(goal);
+            }
+
 
             // Get the transition details as a String.
             String geofenceTransitionDetails = getGeofenceTransitionDetails(
@@ -118,7 +143,7 @@ public class GeofenceService extends IntentService implements
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
-            Log.e(TAG, "Invalid transition type: " + geofenceTransition);
+            //Log.e(TAG, "Invalid transition type: " + geofenceTransition);
         }
     }
 

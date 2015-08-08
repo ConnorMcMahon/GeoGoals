@@ -84,7 +84,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     hideKeyboard(v);
-                    ((GoalLocation) mContext).getGoal().setTitle(mSearchBox.getText().toString());
+                    ((AddGoal) mContext).getGoal().setTitle(mSearchBox.getText().toString());
                 }
 
             }
@@ -237,14 +237,20 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                 if(mGeofenceService != null){
                     Geocoder geocoder = new Geocoder(mContext, Locale.US);
                     Location lastLocation = mGeofenceService.getLastLocation();
-                    double longitude = lastLocation.getLongitude();
-                    double latitude = lastLocation.getLatitude();
 
-                    double lowerLeftLong = Math.max(-180, longitude - SEARCH_DISTANCE);
-                    double lowerLeftLat = Math.max(-90, latitude - SEARCH_DISTANCE);
-                    double upperRightLong = Math.min(90, longitude + SEARCH_DISTANCE);
-                    double upperRightLat = Math.min(180, latitude + SEARCH_DISTANCE);
-                    results = geocoder.getFromLocationName(toSearch, 5, lowerLeftLat, lowerLeftLong, upperRightLat, upperRightLong);
+                    if(lastLocation != null){
+                        double longitude = lastLocation.getLongitude();
+                        double latitude = lastLocation.getLatitude();
+
+
+                        double lowerLeftLong = Math.max(-180, longitude - SEARCH_DISTANCE);
+                        double lowerLeftLat = Math.max(-90, latitude - SEARCH_DISTANCE);
+                        double upperRightLong = Math.min(90, longitude + SEARCH_DISTANCE);
+                        double upperRightLat = Math.min(180, latitude + SEARCH_DISTANCE);
+                        results = geocoder.getFromLocationName(toSearch, 5, lowerLeftLat, lowerLeftLong, upperRightLat, upperRightLong);
+                    } else {
+                        geocoder.getFromLocationName(toSearch, 5);
+                    }
 
                     if (results.size() == 0) {
                         return false;
@@ -272,15 +278,18 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                     mMarkers.add(marker);
                 }
             }
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(Marker marker : mMarkers) {
-                builder.include(marker.getPosition());
-            }
-            LatLngBounds bounds = builder.build();
+            if (mMarkers.size() > 0) {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(Marker marker : mMarkers) {
+                    builder.include(marker.getPosition());
+                }
+                LatLngBounds bounds = builder.build();
 
-            int padding = 10; //padding from edge of map
-            CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mMap.animateCamera(update);
+                int padding = 10; //padding from edge of map
+                CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                mMap.animateCamera(update);
+            }
+
         }
     }
 }

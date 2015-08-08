@@ -12,9 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -103,10 +105,12 @@ public class AddGoal extends ActionBarActivity {
 
     public class AddGoalPagerAdapter extends FragmentPagerAdapter {
         public List<String> mFragments;
+        public SparseArray<Fragment> mRegisteredFragments;
 
         public AddGoalPagerAdapter(FragmentManager fm) {
             super(fm);
             mFragments = new ArrayList<String>();
+            mRegisteredFragments = new SparseArray<Fragment>();
             mFragments.add(GoalEditFragment.class.getName());
             mFragments.add(GoalLocationFragment.class.getName());
         }
@@ -119,8 +123,25 @@ public class AddGoal extends ActionBarActivity {
         }
 
         @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            mRegisteredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            mRegisteredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        @Override
         public int getCount() {
             return mFragments.size();
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return mRegisteredFragments.get(position);
         }
 
     }
@@ -128,8 +149,8 @@ public class AddGoal extends ActionBarActivity {
     public void onClickSubmitGoal(){
         Intent intent = new Intent();
         FragmentManager fm = getSupportFragmentManager();
-        GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
-        if(details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
+        GoalEditFragment details = (GoalEditFragment) mAddGoalPagerAdapter.getRegisteredFragment(0);
+        if(details == null || details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
             Toast errorMessage = Toast.makeText(mContext, "Required Details missing", Toast.LENGTH_SHORT);
             errorMessage.show();
             return;
@@ -140,8 +161,8 @@ public class AddGoal extends ActionBarActivity {
         mGoal.setTitle(details.getTitle());
         mGoal.setOccurance(details.getOccurences());
 
-        GoalLocationFragment locationData = (GoalLocationFragment) fm.findFragmentById(R.id.fragment_goal_location);
-        if(locationData.getLocations().size() == 0){
+        GoalLocationFragment locationData = (GoalLocationFragment) mAddGoalPagerAdapter.getRegisteredFragment(1);
+        if(locationData == null || locationData.getLocations().size() == 0){
             Toast errorMessage = Toast.makeText(mContext, "Requires at least one location", Toast.LENGTH_SHORT);
             errorMessage.show();
             return;
