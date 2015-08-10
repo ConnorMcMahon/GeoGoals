@@ -7,6 +7,16 @@
     <string name="google_maps_key" templateMergeStrategy="preserve">YOUR_KEY_HERE</string>
     <string name="add_locations_button">Add Locations</string>
     <string name="title_hint">Title</string>
+    <string name="location_search_hint">Search for Locations</string>
+    <string name="title_activity_goal_detail">Goal Details</string>
+    <string name="title_activity_goal_edit">Goal Edit</string>
+    <string name="title_activity_goal_delete">Delete Goal</string>
+    <string name="action_add_goal">Add New Goal</string>
+
+    <!-- Labels -->
+    <string name="goal_title_label">Title</string>
+    <string name="goal_comments_label">Description</string>
+
 
     <string-array name="goal_title_suggestions">
         <item>Go to the Gym</item>
@@ -14,7 +24,17 @@
         <item>Avoid Starbucks</item>
     </string-array>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <string-array name="activity_main_context_menu">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="add_goal_tabs">
+        <item>Details</item>
+        <item>Locations</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

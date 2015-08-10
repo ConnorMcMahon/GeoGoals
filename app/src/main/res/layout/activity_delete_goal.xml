@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_delete_container"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_goal_delete_title_text"
+            android:text=""/>
+
+    <Button
+        android:id="@+id/confirm_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Confirm"
+        android:onClick="onClickConfirmDelete">
+    </Button>
+
+    <Button
+        android:id="@+id/cancel_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Cancel"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/confirm_action"
+        android:layout_toEndOf="@+id/confirm_action">
+    </Button>
+
+    <!--</LinearLayout>-->
+
+</RelativeLayout>

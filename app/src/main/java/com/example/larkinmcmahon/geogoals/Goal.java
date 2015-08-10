@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,32 +14,101 @@ import java.util.List;
  * Created by connor on 7/28/15.
  */
 public class Goal implements Parcelable {
+
+    private static int id = 0;
+
     private List<LatLng> mLocations;
     private List<Integer> mRadii;
+    private List<Integer> mGeofenceIDs;
     private String mTitle;
+    private int mOccurrences;
+    private int mTimeFrame;
+    private String mComments;
+    private int mId;
+    private String mStartDate;
+    private String mStartTime;
+    private String mEndDate;
+    private String mEndTime;
+    private int mCurrentOccurrences;
 
-    public Goal(String title, List<LatLng> locations, List<Integer> radii) {
+
+    public Goal() {
+
+    }
+
+    public Goal(int id, String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs,
+                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT, int currentOccurences) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
+        mOccurrences = occurrences;
+        mTimeFrame = timeFrame;
+        mComments = comments;
+        mId = id;
+        mStartDate = startD;
+        mEndDate = endD;
+        mStartTime = startT;
+        mEndTime = endT;
+        mGeofenceIDs = geofenceIDs;
+        mCurrentOccurrences = currentOccurences;
+
+    }
+    public Goal(String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs, int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
+        mTitle = title;
+        mLocations = locations;
+        mRadii = radii;
+        mOccurrences = occurrences;
+        mTimeFrame = timeFrame;
+        mComments = comments;
+        mId = id;
+        mStartDate = startD;
+        mEndDate = endD;
+        mStartTime = startT;
+        mEndTime = endT;
+        mGeofenceIDs = geofenceIDs;
+        mCurrentOccurrences = 0;
+        id++;
     }
 
     public Goal(String title){
         mTitle = title;
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
+        mGeofenceIDs = new ArrayList<Integer>();
+        mOccurrences = 0;
+        mTimeFrame = 0;
+        mComments = "";
+        mId = id;
+        mStartDate = "";
+        mEndDate = "";
+        mStartTime = "";
+        mEndTime = "";
+        mCurrentOccurrences = 0;
+        id++;
     }
 
     private Goal(Parcel in){
         mLocations = new ArrayList<LatLng>();
         mRadii = new ArrayList<Integer>();
+        mGeofenceIDs = new ArrayList<Integer>();
         mTitle = in.readString();
+        mOccurrences = in.readInt();
+        mTimeFrame = in.readInt();
+        mComments = in.readString();
+        mId = in.readInt();
+        mStartDate = in.readString();
+        mEndDate = in.readString();
+        mStartTime = in.readString();
+        mEndTime = in.readString();
+        mCurrentOccurrences = in.readInt();
+        //id++;
         in.readTypedList(mLocations, LatLng.CREATOR);
-        in.readList(mRadii, Integer.class.getClassLoader() );
+        in.readList(mRadii, Integer.class.getClassLoader());
+        in.readList(mGeofenceIDs, Integer.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Goal> CREATOR
-            = new Parcelable.Creator<Goal>() {
+    public static final Creator<Goal> CREATOR
+            = new Creator<Goal>() {
         public Goal createFromParcel(Parcel in) {
             return new Goal(in);
         }
@@ -53,6 +123,7 @@ public class Goal implements Parcelable {
         mRadii.add(radius);
     }
 
+    public int getID() { return mId; }
     public void setTitle(String title){
         mTitle = title;
     }
@@ -69,6 +140,66 @@ public class Goal implements Parcelable {
         return mRadii;
     }
 
+    public int getOccurance(){
+        return mOccurrences;
+    }
+
+    public void setOccurance(int occurrences){
+        mOccurrences = occurrences;
+    }
+
+    public int getTimeFrame(){
+        return mTimeFrame;
+    }
+
+    public void setTimeFrame(int timeFrame){
+        mTimeFrame = timeFrame;
+    }
+
+    public String getComments(){
+        return mComments;
+    }
+
+    public void setComments(String comments){
+        mComments = comments;
+    }
+
+    public void setStartDate(String start) {mStartDate = start;}
+
+    public String getStartDate() {return mStartDate;}
+
+    public void setEndDate(String end) {mEndDate = end;}
+
+    public String getEndDate() {return mEndDate;}
+
+    public void setStartTime(String start) {mStartTime = start;}
+
+    public String getStartTime() {return mStartTime;}
+
+    public void setEndTime(String end) {mEndTime = end;}
+
+    public String getEndTime() {return mEndTime;}
+
+    public List<Integer> getIDs(){
+        return mGeofenceIDs;
+    }
+
+    public void setIds(List<Integer> ids){
+        mGeofenceIDs = ids;
+    }
+
+    public int getCurrentOccurences(){
+        return mCurrentOccurrences;
+    }
+
+    public void incrementOccurences() {
+        mCurrentOccurrences++;
+    }
+
+    public void setmCurrentOccurrences(int occurrences) {
+        mCurrentOccurrences = occurrences;
+    }
+
     //unsure what to put here
     public int describeContents(){
         return 0;
@@ -76,8 +207,22 @@ public class Goal implements Parcelable {
 
     public void writeToParcel(Parcel out, int flags){
         out.writeString(mTitle);
+        out.writeInt(mOccurrences);
+        out.writeInt(mTimeFrame);
+        out.writeString(mComments);
+        out.writeInt(mId);
+        out.writeString(mStartDate);
+        out.writeString(mEndDate);
+        out.writeString(mStartTime);
+        out.writeString(mEndTime);
+        out.writeInt(mCurrentOccurrences);
         out.writeTypedList(mLocations);
         out.writeList(mRadii);
+        out.writeList(mGeofenceIDs);
+    }
+
+    public int getOverallID() {
+        return id;
     }
 
 }
