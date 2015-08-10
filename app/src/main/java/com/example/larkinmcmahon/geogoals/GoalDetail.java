@@ -53,9 +53,4 @@ public class GoalDetail extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showTimePickerDialog(View v) {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
 }

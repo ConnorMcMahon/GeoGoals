@@ -73,7 +73,7 @@ public class GoalLocation extends Activity {
 
     public void onClickSubmitGoal(View v){
         Intent intent = new Intent();
-        //intent.putExtra("goal", mGoal); //eric comment - wasn't compiling
+        intent.putExtra("goal", mGoal); //eric comment - wasn't compiling
         setResult(RESULT_OK, intent);
         finish();
         Log.v(TAG, "Sending goal back to GoalList");

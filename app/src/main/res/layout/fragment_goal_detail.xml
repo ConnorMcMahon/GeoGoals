@@ -12,9 +12,4 @@
         android:id="@+id/fragment_goal_detail_title_text"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.06" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pick time"
-        android:onClick="showTimePickerDialog" />
 </LinearLayout>

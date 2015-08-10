@@ -112,7 +112,7 @@ public class GeofenceService extends IntentService implements
 
             for(int i = 0; i < triggeringGeofences.size(); i++){
                 for(int j = 0; j < goals.size(); j++){
-                    List<Integer> ids = goals.get(j).getIDs();
+                    List<Integer> ids = goals.get(j).getIds();
                     for(int k = 0; k < ids.size(); k++){
                         Geofence fence = triggeringGeofences.get(i);
                         fence.getRequestId();
