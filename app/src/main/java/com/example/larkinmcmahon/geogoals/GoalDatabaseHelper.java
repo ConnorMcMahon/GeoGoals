@@ -29,7 +29,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_LOCATIONS = "locationInformation";
 
     //  Table Columns names
-    public static final String KEY_ID = "id";
+    public static final String KEY_ID = "_id";
     public static final String KEY_GOALNAME = "name";
     public static final String KEY_OCCURANCES = "occurances";
     public static final String KEY_TIMEFRAME = "timeFrame";
@@ -99,7 +99,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         ContentValues locationValues = new ContentValues();
         List<LatLng> locations = goal.getLocations();
         List<Integer> radii = goal.getRadii();
-        List<Integer> geofenceIds = goal.getIDs();
+        List<Integer> geofenceIds = goal.getIds();
         int id = goal.getID();
 
         //goals table

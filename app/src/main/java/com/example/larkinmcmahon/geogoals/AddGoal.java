@@ -170,11 +170,11 @@ public class AddGoal extends ActionBarActivity {
 
         List<LatLng> locations = locationData.getLocations();
         List<Integer> radii = locationData.getRadii();
+        List<Integer> ids = locationData.getIds();
 
         for(int i = 0; i < locations.size(); i++){
             mGoal.addGeofence(locations.get(i), radii.get(i));
         }
-
         intent.putExtra("goal", mGoal); //eric comment - wasn't compiling
         setResult(RESULT_OK, intent);
         finish();

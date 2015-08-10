@@ -52,6 +52,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     final private double SEARCH_DISTANCE = .3; //Around 30 km
     private List<LatLng> mCoords;
     final private int RADIUS = 1000;
+    private List<Integer> mIds;
 
     private ServiceConnection mConnection;
 
@@ -126,6 +127,10 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
             radii.add(RADIUS);
         }
         return radii;
+    }
+
+    public List<Integer> getIds() {
+        return mIds;
     }
 
     private void hideKeyboard(View view) {

@@ -3,9 +3,14 @@ package com.example.larkinmcmahon.geogoals;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -34,14 +39,30 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class GoalListFragment extends Fragment {
+public class GoalListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private Context mContext;
     private List<Goal> mGoals;
     private List<String> mGoalStrings;
     private ArrayAdapter<String> mGoalAdapter;
     private Button mAddGoalButton;
     private String TAG = "GOAL_LIST_FRAGMENT";
-    private static int contextMenuItemIDSelected;
+    private GoalListCursorAdapter mGoalListAdapter;
+    private static int LOADER_ID = 2;
+    public static boolean mGoalSelected = false;
+
+    private static final String[] GOAL_DETAIL_COLUMNS = {
+            GoalDatabaseHelper.KEY_ID,
+            GoalDatabaseHelper.KEY_GOALNAME,
+            GoalDatabaseHelper.KEY_OCCURANCES,
+            GoalDatabaseHelper.KEY_TIMEFRAME,
+            GoalDatabaseHelper.KEY_COMMENTS,
+            GoalDatabaseHelper.KEY_STARTDATE,
+            GoalDatabaseHelper.KEY_STARTTIME,
+            GoalDatabaseHelper.KEY_ENDDATE,
+            GoalDatabaseHelper.KEY_ENDTIME,
+    };
+
+    private static final int COLUMN_ID = 0;
 
     public GoalListFragment() {
     }
@@ -52,24 +73,24 @@ public class GoalListFragment extends Fragment {
 
         mContext = getActivity();
 
-        mGoalStrings = new ArrayList<String>();
+        // mGoalStrings = new ArrayList<String>();
 
-        mGoals = ((GoalList) mContext).getGoals();
+        // mGoals = ((GoalList) mContext).getGoals();
 
-        ArrayList<Goal> mListOfGoals = new ArrayList<Goal>();
+        //ArrayList<Goal> mListOfGoals = new ArrayList<Goal>();
 
-        for(int i = 0; i < mGoals.size(); i++){
-            Goal goal = mGoals.get(i);
-            mGoalStrings.add(goal.getTitle());
-            mListOfGoals.add(goal);
-        }
+//        for(int i = 0; i < mGoals.size(); i++){
+//            Goal goal = mGoals.get(i);
+//            mGoalStrings.add(goal.getTitle());
+//            mListOfGoals.add(goal);
+//        }
 
-        mGoalAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.list_item_goal,
-                R.id.list_item_goal_textview,
-                mGoalStrings
-        );
+//        mGoalAdapter = new ArrayAdapter<String>(
+//                getActivity(),
+//                R.layout.list_item_goal,
+//                R.id.list_item_goal_textview,
+//                mGoalStrings
+//        );
 
         mAddGoalButton = new Button(getActivity());
 
@@ -88,35 +109,37 @@ public class GoalListFragment extends Fragment {
 
         goal_list.addFooterView(mAddGoalButton);
 
-//        goal_list.setAdapter(mGoalAdapter);
-        goal_list.setAdapter(new MainCustomListAdapter(mContext, mListOfGoals));
+        mGoalListAdapter = new GoalListCursorAdapter(getActivity(),null,0);
+        goal_list.setAdapter(mGoalListAdapter);
+        //goal_list.setAdapter(new MainCustomListAdapter(mContext, mListOfGoals));
         goal_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String selectedGoalTitle = mGoalAdapter.getItem(position);
-                Goal selectedGoal = new Goal();
-
-                for (int i = 0; i < mGoals.size(); i++) {
-                    Goal goal = mGoals.get(i);
-                    if (goal.getTitle() == selectedGoalTitle) {
-                        selectedGoal = goal;
-                    }
-                }
-
-                if (selectedGoal != null) {
+                mGoalSelected = true;
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                int selectedID = cursor.getInt(COLUMN_ID);
+                GoalDetailFragment detailFragment = (GoalDetailFragment) getFragmentManager().findFragmentById(R.id.fragment_goal_detail);
+                if(detailFragment == null) { //handset layout
                     Intent intent = new Intent(getActivity(), GoalDetail.class)
-                            //.putExtra("selectedGoal", (Parcelable) selectedGoal)
-                            .putExtra("dbID", selectedGoal.getID());
+                            .putExtra("dbID", selectedID);
                     startActivity(intent);
-                } else {
-                    Log.e(TAG,"Could not find selected Goal from Adapter");
+                }
+                else { //tablet layout
+                    Bundle args = new Bundle();
+                    args.putInt("dbid",selectedID);
+
+                    GoalDetailFragment newFragment = new GoalDetailFragment();
+                    newFragment.setArguments(args);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_goal_detail, newFragment, "GOALDETAILFRAGMENT")
+                            .commit();
                 }
             }
         });
         registerForContextMenu(goal_list);
         return rootView;
-
     }
 
     public void checkForIncomingIntents() {
@@ -157,6 +180,12 @@ public class GoalListFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         Intent intent;
@@ -187,8 +216,8 @@ public class GoalListFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        mGoals = ((GoalList) mContext).getGoals();
-        updateListView(mGoals);
+        // mGoals = ((GoalList) mContext).getGoals();
+        //  updateListView(mGoals);
     }
 
     public void updateListView(List<Goal> newGoals){
@@ -198,7 +227,30 @@ public class GoalListFragment extends Fragment {
         }
         for(int a = 0; a < newGoals.size(); a++){
             mGoalStrings.add(newGoals.get(a).getTitle());
-    }
+        }
         mGoalAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Intent intent = getActivity().getIntent();
+        return new CursorLoader(getActivity(),
+                GoalsProvider.CONTENT_URI,
+                GOAL_DETAIL_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mGoalListAdapter.swapCursor(data);
+        //TODO: Add in saveInstanceState methods to save selected Goal on app rebuilds - see Sunshine example
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        mGoalListAdapter.swapCursor(null);
     }
 }

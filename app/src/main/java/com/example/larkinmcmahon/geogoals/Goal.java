@@ -16,6 +16,7 @@ import java.util.List;
 public class Goal implements Parcelable {
 
     private static int id = 0;
+    private static int geofenceId = 0;
 
     private List<LatLng> mLocations;
     private List<Integer> mRadii;
@@ -53,7 +54,8 @@ public class Goal implements Parcelable {
         mCurrentOccurrences = currentOccurences;
 
     }
-    public Goal(String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs, int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
+    public Goal(String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs,
+                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
@@ -121,6 +123,7 @@ public class Goal implements Parcelable {
     public void addGeofence(LatLng coord, int radius){
         mLocations.add(coord);
         mRadii.add(radius);
+        mGeofenceIDs.add(geofenceId++);
     }
 
     public int getID() { return mId; }
@@ -180,9 +183,6 @@ public class Goal implements Parcelable {
 
     public String getEndTime() {return mEndTime;}
 
-    public List<Integer> getIDs(){
-        return mGeofenceIDs;
-    }
 
     public void setIds(List<Integer> ids){
         mGeofenceIDs = ids;
@@ -196,8 +196,12 @@ public class Goal implements Parcelable {
         mCurrentOccurrences++;
     }
 
-    public void setmCurrentOccurrences(int occurrences) {
+    public void setCurrentOccurrences(int occurrences) {
         mCurrentOccurrences = occurrences;
+    }
+
+    public List<Integer> getIds() {
+        return mGeofenceIDs;
     }
 
     //unsure what to put here
@@ -224,5 +228,14 @@ public class Goal implements Parcelable {
     public int getOverallID() {
         return id;
     }
+
+    public static void setCurrentID(int previousId){
+        id = previousId;
+    }
+
+    public static void setGeofenceId(int previousId){
+        geofenceId = previousId;
+    }
+
 
 }
