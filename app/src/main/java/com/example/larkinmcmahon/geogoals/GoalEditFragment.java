@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,30 @@ import android.util.Log;
 
 public class GoalEditFragment extends Fragment{
     Context mContext;
+    private static int LOADER_ID = 2;
+    public static int mDbID = -1;
+    private static final String[] GOAL_DETAIL_COLUMNS = {
+            GoalDatabaseHelper.KEY_ID,
+            GoalDatabaseHelper.KEY_GOALNAME,
+            GoalDatabaseHelper.KEY_OCCURANCES,
+            GoalDatabaseHelper.KEY_TIMEFRAME,
+            GoalDatabaseHelper.KEY_COMMENTS,
+            GoalDatabaseHelper.KEY_STARTDATE,
+            GoalDatabaseHelper.KEY_STARTTIME,
+            GoalDatabaseHelper.KEY_ENDDATE,
+            GoalDatabaseHelper.KEY_ENDTIME,
+    };
+
+    //correlate with GOAL_DETAIL_COLUMNS
+    private static final int COLUMN_GOALNAME = 1;
+    private static final int COLUMN_COMMENTS = 4;
+    private static final int COLUMN_OCCURRENCES = 2;
+    private static final int COLUMN_TIMEFRAME = 3;
+
+    private TextView mEditGoalTitle;
+    private TextView mEditGoalComments;
+    private TextView mEditGoalOccurrences;
+    private TextView mEditGoalTimeframe;
 
     public GoalEditFragment() {
     }
@@ -54,6 +80,11 @@ public class GoalEditFragment extends Fragment{
         mContext = getActivity();
 
         View rootView = inflater.inflate(R.layout.fragment_goal_edit, container, false);
+
+        mEditGoalTitle = ((TextView) getActivity().findViewById(R.id.goal_title_editbox));
+        mEditGoalComments = ((TextView) getActivity().findViewById(R.id.goal_comments_editbox));
+        mEditGoalOccurrences = ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox));
+        mEditGoalTimeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox));
 
         return rootView;
     }
@@ -139,4 +170,41 @@ public class GoalEditFragment extends Fragment{
         }
         return Integer.parseInt(timeframe);
     }
+
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        if(mDbID == -1 && getArguments() != null && getArguments().containsKey("dbid")) {
+            mDbID = getArguments().getInt("dbid");
+        }
+        if(mDbID != -1) {
+            return new CursorLoader(getActivity(),
+                    Uri.withAppendedPath(GoalsProvider.CONTENT_URI, String.valueOf(mDbID)),
+                    GOAL_DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        cursor.moveToFirst();
+        String mGoalNameText = cursor.getString(COLUMN_GOALNAME);
+        String mGoalCommentsText = cursor.getString(COLUMN_COMMENTS);
+        String mGoalOccurrencesText = cursor.getString(COLUMN_OCCURRENCES);
+        String mGoalTimeframeText = cursor.getString(COLUMN_TIMEFRAME);
+
+
+        mEditGoalTitle.setText(mGoalNameText);
+        mEditGoalComments.setText(mGoalCommentsText);
+        mEditGoalTimeframe.setText(mGoalTimeframeText);
+        mEditGoalOccurrences.setText(mGoalOccurrencesText);
+
+    }
+
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
+    }
+
 }
