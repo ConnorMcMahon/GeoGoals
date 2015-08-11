@@ -46,7 +46,6 @@ public class GoalDetail extends AppCompatActivity {
 //            Goal passingGoal = (Goal)currentIntent.getSerializableExtra("selectedGoal");
             int dbid = currentIntent.getIntExtra("dbid",0);
             Intent intent = new Intent(this, GoalEdit.class)
-//                    .putExtra("passingGoal", (Serializable)passingGoal);
                       .putExtra("dbid", dbid);
             startActivity(intent);
         }

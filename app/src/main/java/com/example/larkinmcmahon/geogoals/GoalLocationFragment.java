@@ -170,6 +170,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                             .build();
 
                     CameraUpdate zoomIn = CameraUpdateFactory.newCameraPosition(camPos);
+                    mMap = fragment.getMap();
                     mMap.moveCamera(zoomIn);
 
                 }

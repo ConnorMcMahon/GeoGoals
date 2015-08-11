@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -15,10 +16,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.util.Log;
 
-public class GoalEditFragment extends Fragment{
+public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     Context mContext;
     private static int LOADER_ID = 2;
-    public static int mDbID = -1;
+    public int mDbID = -1;
     private static final String[] GOAL_DETAIL_COLUMNS = {
             GoalDatabaseHelper.KEY_ID,
             GoalDatabaseHelper.KEY_GOALNAME,
@@ -81,43 +82,48 @@ public class GoalEditFragment extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_goal_edit, container, false);
 
-        mEditGoalTitle = ((TextView) getActivity().findViewById(R.id.goal_title_editbox));
-        mEditGoalComments = ((TextView) getActivity().findViewById(R.id.goal_comments_editbox));
-        mEditGoalOccurrences = ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox));
-        mEditGoalTimeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox));
+
+
+        Intent intent = getActivity().getIntent();
+        if(intent.hasExtra("dbid")){
+            mDbID = intent.getIntExtra("dbid",-1);
+        }
+
 
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
-        Intent intent = getActivity().getIntent();
 
-        if (intent != null && intent.hasExtra("dbid")) {
-            String projection[] = { GoalDatabaseHelper.KEY_GOALNAME,
-                                    GoalDatabaseHelper.KEY_COMMENTS,
-                                    GoalDatabaseHelper.KEY_OCCURANCES,
-                                    GoalDatabaseHelper.KEY_TIMEFRAME};
-            int dbid = intent.getIntExtra("dbID", 0);
-            Cursor cursor = getActivity().getContentResolver().query(
-                    Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
-                            String.valueOf(dbid)),projection,null,null,null);
-            if(cursor.moveToFirst()) {
-                String mGoalName = cursor.getString(0);
-                String mComments = cursor.getString(1);
-                String mOccurances = cursor.getString(2);
-                String mTimeFrame = cursor.getString(3);
-
-                ((TextView) getActivity().findViewById(R.id.goal_title_editbox))
-                        .setText(mGoalName);
-                ((TextView) getActivity().findViewById(R.id.goal_comments_editbox))
-                        .setText(mComments);
-                ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox))
-                        .setText(String.valueOf(mOccurances));
-                ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox))
-                        .setText(String.valueOf(mTimeFrame));
-            }
+//        Intent intent = getActivity().getIntent();
+//
+//        if (intent != null && intent.hasExtra("dbid")) {
+//            String projection[] = { GoalDatabaseHelper.KEY_GOALNAME,
+//                                    GoalDatabaseHelper.KEY_COMMENTS,
+//                                    GoalDatabaseHelper.KEY_OCCURANCES,
+//                                    GoalDatabaseHelper.KEY_TIMEFRAME};
+//            int dbid = intent.getIntExtra("dbID", 0);
+//            Cursor cursor = getActivity().getContentResolver().query(
+//                    Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
+//                            String.valueOf(dbid)),projection,null,null,null);
+//            if(cursor.moveToFirst()) {
+//                String mGoalName = cursor.getString(0);
+//                String mComments = cursor.getString(1);
+//                String mOccurances = cursor.getString(2);
+//                String mTimeFrame = cursor.getString(3);
+//
+//                ((TextView) getActivity().findViewById(R.id.goal_title_editbox))
+//                        .setText(mGoalName);
+//                ((TextView) getActivity().findViewById(R.id.goal_comments_editbox))
+//                        .setText(mComments);
+//                ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox))
+//                        .setText(String.valueOf(mOccurances));
+//                ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox))
+//                        .setText(String.valueOf(mTimeFrame));
+//            }
 
 
 
@@ -136,7 +142,7 @@ public class GoalEditFragment extends Fragment{
 //            ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox))
 //                    .setText(String.valueOf(goalEdit.mCurrentGoal.getTimeFrame()));
 
-        }
+
     }
 
     public String getTitle(){
@@ -195,6 +201,11 @@ public class GoalEditFragment extends Fragment{
         String mGoalOccurrencesText = cursor.getString(COLUMN_OCCURRENCES);
         String mGoalTimeframeText = cursor.getString(COLUMN_TIMEFRAME);
 
+
+        mEditGoalTitle = ((TextView) getActivity().findViewById(R.id.goal_title_editbox));
+        mEditGoalComments = ((TextView) getActivity().findViewById(R.id.goal_comments_editbox));
+        mEditGoalOccurrences = ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox));
+        mEditGoalTimeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox));
 
         mEditGoalTitle.setText(mGoalNameText);
         mEditGoalComments.setText(mGoalCommentsText);
