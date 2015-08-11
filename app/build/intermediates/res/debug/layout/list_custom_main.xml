@@ -1,37 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:minHeight="50dp"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="5dip"
     android:id="@+id/list_custom_adapter_main">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textStyle="bold"
-        android:typeface="sans" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:textStyle="bold"
+            android:typeface="sans" />
 
-    <TextView
-        android:id="@+id/reporter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_marginTop="5dip"
-        android:text=""
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/occurrence_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/reporter"
-        android:layout_alignBottom="@+id/reporter"
-        android:layout_alignParentRight="true"
-        android:text=""
-        android:textSize="12sp" />
+    </RelativeLayout>
 
-</RelativeLayout><!-- From: file:/Users/djflash/GeoGoals/app/src/main/res/layout/list_custom_main.xml -->
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/itemview_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/itemview_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout><!-- From: file:/Users/djflash/GeoGoals/app/src/main/res/layout/list_custom_main.xml -->

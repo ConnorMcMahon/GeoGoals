@@ -193,11 +193,9 @@ public class GoalList extends AppCompatActivity implements
     }
 
     public void addGoalButtonClick(){
-//        Intent intent = new Intent(this, AddGoal.class);
-//        int requestCode = 1;
-//        this.startActivityForResult(intent, requestCode);
-        Intent intent = new Intent(this, GeoDonationList.class);
-        this.startActivity(intent);
+        Intent intent = new Intent(this, AddGoal.class);
+        int requestCode = 1;
+        this.startActivityForResult(intent, requestCode);
     }
 
     @Override
