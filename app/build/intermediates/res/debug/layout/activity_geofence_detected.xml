@@ -1,0 +1,8 @@
+
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_goal_detail"
+    android:name="com.example.larkinmcmahon.geogoals.GeoFenceDetectedFragment"
+    tools:layout="@layout/fragment_geofence_detected"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" /><!-- From: file:/Users/djflash/GeoGoals/app/src/main/res/layout/activity_geofence_detected.xml -->

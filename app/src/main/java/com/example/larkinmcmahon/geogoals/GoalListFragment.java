@@ -52,6 +52,7 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
             GoalDatabaseHelper.KEY_STARTTIME,
             GoalDatabaseHelper.KEY_ENDDATE,
             GoalDatabaseHelper.KEY_ENDTIME,
+            GoalDatabaseHelper.KEY_CURRENTOCCURENCES
     };
 
     private static final int COLUMN_ID = 0;
