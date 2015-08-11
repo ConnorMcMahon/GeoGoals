@@ -1,9 +1,11 @@
 package com.example.larkinmcmahon.geogoals;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,7 +129,15 @@ public class GeofenceService extends IntentService implements
             for(int i = 0; i < triggeredGoals.size(); i++){
                 Goal goal = triggeredGoals.get(i);
                 goal.incrementOccurences();
-                dbHelper.updateGoal(goal);
+
+                int dbid = goal.getID();
+
+                String projection[] = {GoalDatabaseHelper.KEY_ID };
+                ContentValues values = new ContentValues();
+                values.put(GoalDatabaseHelper.KEY_ID, goal.getCurrentOccurences());
+                int mUpdateGoalStatusInt = getContentResolver().update(
+                        Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
+                                String.valueOf(dbid)),values,null,projection);
             }
 
 
