@@ -65,30 +65,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         return fragment;
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//
-//        View rootView = inflater.inflate(R.layout.activity_goal_edit, container, false);
-//        Intent intent = getActivity().getIntent();
-////        if (intent != null && intent.hasExtra("passingGoal")) {
-////            Goal currentGoal = (Goal)intent.getSerializableExtra("passingGoal");
-////            ((TextView) rootView.findViewById(R.id.activity_goal_edit_title))
-////                    .setText(currentGoal.getTitle());
-////            int idnum = currentGoal.getOverallID();
-////            Log.d("GOALDBHELPER", String.valueOf(idnum));
-////        }
-//        if (intent != null && intent.hasExtra("dbid")) {
-//            GoalDatabaseHelper db = new GoalDatabaseHelper(getActivity().getApplicationContext());
-//            int dbid = intent.getIntExtra("dbID", 0);
-//            GoalEdit goalEdit = new GoalEdit();
-//            goalEdit.mCurrentGoal = db.getGoal(dbid);
-////            Goal currentGoal = db.getGoal(dbid);
-//            ((TextView) rootView.findViewById(R.id.activity_goal_edit_title))
-//                    .setText(goalEdit.mCurrentGoal.getTitle());
-//        }
-//        return rootView;
-//    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,6 +89,10 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         mEditGoalStartDate = ((TextView) getActivity().findViewById(R.id.goal_startdate_edittext));
         mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.goal_enddate_edittext));
 
