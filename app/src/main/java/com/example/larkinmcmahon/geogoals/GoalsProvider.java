@@ -23,14 +23,18 @@ public class GoalsProvider extends ContentProvider {
     public static final int GOALS_ID = 110;
     public static final int LOCATIONS = 200;
     public static final int LOCATIONS_ID = 210;
+    public static final int DONATIONS = 300;
 
     private static final String GOALS_BASE_PATH = "goals";
     private static final String LOCATION_BASE_PATH = "location";
+    private static final String DONATIONS_BASE_PATH = "donations";
 
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/" + GOALS_BASE_PATH);
     public static final Uri LOCATION_URI = Uri.parse("content://" + AUTHORITY
             + "/" + LOCATION_BASE_PATH);
+    public static final Uri DONATIONS_URI = Uri.parse("content://" + AUTHORITY
+            + "/" + DONATIONS_BASE_PATH);
 
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
             + "/goals";
@@ -40,7 +44,8 @@ public class GoalsProvider extends ContentProvider {
             + "/location";
     public static final String LOCATION_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/location";
-
+    public static final String DONATION_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+            + "/donations";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(
             UriMatcher.NO_MATCH);
@@ -49,6 +54,7 @@ public class GoalsProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, GOALS_BASE_PATH + "/#", GOALS_ID);
         sURIMatcher.addURI(AUTHORITY, LOCATION_BASE_PATH, LOCATIONS);
         sURIMatcher.addURI(AUTHORITY, LOCATION_BASE_PATH + "/#", LOCATIONS_ID);
+        sURIMatcher.addURI(AUTHORITY, DONATIONS_BASE_PATH, DONATIONS);
     }
 
     @Override
@@ -81,9 +87,11 @@ public class GoalsProvider extends ContentProvider {
                 queryBuilder.appendWhere(GoalDatabaseHelper.KEY_ID + "="
                         + uri.getLastPathSegment());
                 break;
+            case DONATIONS:
+                queryBuilder.setTables(GoalDatabaseHelper.TABLE_DONATIONS);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI");
-                //TODO: put cases in for location table
         }
 
         Cursor cursor = queryBuilder.query(mDB.getReadableDatabase(),
@@ -132,6 +140,8 @@ public class GoalsProvider extends ContentProvider {
                 return LOCATION_TYPE;
             case LOCATIONS_ID:
                 return LOCATION_ITEM_TYPE;
+            case DONATIONS:
+                return DONATION_TYPE;
             default:
                 return null;
         }

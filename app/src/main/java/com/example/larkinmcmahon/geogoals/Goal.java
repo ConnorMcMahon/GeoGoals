@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by connor on 7/28/15.
  */
-public class Goal implements Parcelable {   
+public class Goal implements Parcelable {
 
     private static int id = 0;
     private static int geofenceId = 0;

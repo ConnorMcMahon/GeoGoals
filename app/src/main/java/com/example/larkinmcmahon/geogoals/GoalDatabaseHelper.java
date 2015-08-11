@@ -27,6 +27,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     //  table names
     public static final String TABLE_Goals = "goals";
     public static final String TABLE_LOCATIONS = "locationInformation";
+    public static final String TABLE_DONATIONS = "donations";
 
     //  Table Columns names
     public static final String KEY_ID = "_id";
@@ -45,6 +46,9 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_LONG = "long";
     public static final String KEY_RADII = "radii";
     public static final String KEY_IDS = "geofence_ids";
+
+    public static final String KEY_CHARITY = "charity";
+    public static final String KEY_URL = "url";
 
     public GoalDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,8 +77,15 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                 + KEY_RADII + " INTEGER,"
                 + KEY_IDS + " INTEGER" + ")";
 
+        String CREATE_DONATIONS_TABLE = "CREATE TABLE " + TABLE_DONATIONS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_CHARITY + " TEXT,"
+                + KEY_URL + " TEXT" + ")";
+
         db.execSQL(CREATE_LOCATIONS_TABLE);
         db.execSQL(CREATE_GOALS_TABLE);
+        db.execSQL(CREATE_DONATIONS_TABLE);
+        addToDonations(db);
     }
 
     // Upgrading database
@@ -90,6 +101,14 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     /**
      * All CRUD(Create, Read, Update, Delete) Operations
      */
+    // Adding new Donations - These are already defined with no user input
+    public void addToDonations(SQLiteDatabase database) {
+        database.execSQL("INSERT INTO "+TABLE_DONATIONS+" VALUES(1,'American Heart Association','https://www.firstgiving.com/Npo/1194/Donation?designId=3449')");
+        database.execSQL("INSERT INTO "+TABLE_DONATIONS+" VALUES(2,'The V Foundation For Cancer Research','https://www.firstgiving.com/Npo/1548/Donation?designId=2771')");
+        database.execSQL("INSERT INTO "+TABLE_DONATIONS+" VALUES(3,'Paralyzed Veterans of America','https://www.firstgiving.com/Npo/2413/Donation?designId=4025')");
+        database.execSQL("INSERT INTO "+TABLE_DONATIONS+" VALUES(4,'Feeding America','https://www.firstgiving.com/Npo/3349/Donation?designId=4530')");
+        database.execSQL("INSERT INTO "+TABLE_DONATIONS+" VALUES(5,'American National Red Cross','https://www.firstgiving.com/Npo/1134/Donation?designId=3413')");
+    }
 
     // Adding new Goals
     long addGoals(Goal goal) {

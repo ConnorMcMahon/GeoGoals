@@ -51,7 +51,22 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".GeoDonationList"
+            android:label="Donation Lists"
+            android:parentActivityName=".GoalList" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DonationWebViewActivity"
+            android:label="Make A Donation!"
+            android:parentActivityName=".GeoDonationList" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

@@ -97,52 +97,6 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
-
-//        Intent intent = getActivity().getIntent();
-//
-//        if (intent != null && intent.hasExtra("dbid")) {
-//            String projection[] = { GoalDatabaseHelper.KEY_GOALNAME,
-//                                    GoalDatabaseHelper.KEY_COMMENTS,
-//                                    GoalDatabaseHelper.KEY_OCCURANCES,
-//                                    GoalDatabaseHelper.KEY_TIMEFRAME};
-//            int dbid = intent.getIntExtra("dbID", 0);
-//            Cursor cursor = getActivity().getContentResolver().query(
-//                    Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
-//                            String.valueOf(dbid)),projection,null,null,null);
-//            if(cursor.moveToFirst()) {
-//                String mGoalName = cursor.getString(0);
-//                String mComments = cursor.getString(1);
-//                String mOccurances = cursor.getString(2);
-//                String mTimeFrame = cursor.getString(3);
-//
-//                ((TextView) getActivity().findViewById(R.id.goal_title_editbox))
-//                        .setText(mGoalName);
-//                ((TextView) getActivity().findViewById(R.id.goal_comments_editbox))
-//                        .setText(mComments);
-//                ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox))
-//                        .setText(String.valueOf(mOccurances));
-//                ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox))
-//                        .setText(String.valueOf(mTimeFrame));
-//            }
-
-
-
-
-//            GoalDatabaseHelper db = new GoalDatabaseHelper(getActivity().getApplicationContext());
-//            int dbid = intent.getIntExtra("dbID", 0);
-//            GoalEdit goalEdit = (GoalEdit) mContext;
-//            goalEdit.mCurrentGoal = db.getGoal(dbid);
-////            Goal currentGoal = db.getGoal(dbid);
-//            ((TextView) getActivity().findViewById(R.id.goal_title_editbox))
-//                    .setText(goalEdit.mCurrentGoal.getTitle());
-//            ((TextView) getActivity().findViewById(R.id.goal_comments_editbox))
-//                    .setText(goalEdit.mCurrentGoal.getComments());
-//            ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox))
-//                    .setText(String.valueOf(goalEdit.mCurrentGoal.getOccurance()));
-//            ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox))
-//                    .setText(String.valueOf(goalEdit.mCurrentGoal.getTimeFrame()));
-
-
     }
 
     public String getTitle(){

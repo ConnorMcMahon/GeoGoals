@@ -1,6 +1,9 @@
 package com.example.larkinmcmahon.geogoals;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
@@ -138,6 +141,34 @@ public class GeofenceService extends IntentService implements
                 int mUpdateGoalStatusInt = getContentResolver().update(
                         Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
                                 String.valueOf(dbid)),values,null,projection);
+
+                //NOTIFICATION CODE
+                // Prepare intent which is triggered if the notification is selected
+
+                int requestID = (int) System.currentTimeMillis();
+                Intent fenceDetectedIntent = new Intent(getApplicationContext(), GeoFenceDetected.class)
+                        .putExtra("dbID", 0); //this is set to 0 for now, should be whatever the id for the goal detected is
+
+                fenceDetectedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                PendingIntent pIntent = PendingIntent.getActivity(this, 1001, fenceDetectedIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                // Build notification
+                Notification noti = new Notification.Builder(getApplicationContext())
+                        .setContentTitle("Goal Location Detected")
+                        .setContentText("If this is incorrect, please press the button below.").setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(pIntent)
+//                .addAction(R.mipmap.ic_launcher, "Call", pIntent)
+                                //.addAction(R.mipmap.ic_launcher, "Incorrect", pIntent)
+                        .build();
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                // hide the notification after its selected
+                noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                notificationManager.notify(1, noti);
+
             }
 
 
