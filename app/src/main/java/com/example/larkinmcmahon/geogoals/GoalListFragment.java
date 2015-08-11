@@ -1,11 +1,11 @@
 package com.example.larkinmcmahon.geogoals;
 
-import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -21,18 +21,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.view.ContextMenu.ContextMenuInfo;
 
-import com.google.android.gms.location.Geofence;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -108,6 +100,39 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
         ListView goal_list = (ListView) rootView.findViewById(R.id.fragment_goal_listview);
 
         goal_list.addFooterView(mAddGoalButton);
+
+
+        //NOTIFICATION CODE
+        // Prepare intent which is triggered if the notification is selected
+
+        int requestID = (int) System.currentTimeMillis();
+        Intent intent = new Intent(getActivity().getApplicationContext(), GeoFenceDetected.class)
+                .putExtra("dbID", 0); //this is set to 0 for now, should be whatever the id for the goal detected is
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 1001, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
+        // Build notification
+        Notification noti = new Notification.Builder(getActivity().getApplicationContext())
+                .setContentTitle("Goal Location Detected")
+                .setContentText("If this is incorrect, please press the button below.").setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pIntent)
+//                .addAction(R.mipmap.ic_launcher, "Call", pIntent)
+                //.addAction(R.mipmap.ic_launcher, "Incorrect", pIntent)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+
+        // hide the notification after its selected
+        //noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(1, noti);
+
+
+
 
         mGoalListAdapter = new GoalListCursorAdapter(getActivity(),null,0);
         goal_list.setAdapter(mGoalListAdapter);
@@ -214,7 +239,7 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         // mGoals = ((GoalList) mContext).getGoals();
         //  updateListView(mGoals);

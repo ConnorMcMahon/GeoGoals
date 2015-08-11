@@ -44,7 +44,7 @@ public class GoalDetail extends AppCompatActivity {
             Intent currentIntent = getIntent();
 //            GoalDetailFragment detail = new GoalDetailFragment();
 //            Goal passingGoal = (Goal)currentIntent.getSerializableExtra("selectedGoal");
-            int dbid = currentIntent.getIntExtra("dbid",0);
+            int dbid = currentIntent.getIntExtra("dbID",-1);
             Intent intent = new Intent(this, GoalEdit.class)
                       .putExtra("dbid", dbid);
             startActivity(intent);
