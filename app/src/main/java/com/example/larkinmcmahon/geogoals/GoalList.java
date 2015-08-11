@@ -92,62 +92,6 @@ public class GoalList extends AppCompatActivity implements
 
         Goal.setCurrentID(mDB.getGoalCount());
 
-//        if(mDB.getAllGoals().size() == 0) {
-//            List<LatLng> latlns = new ArrayList<>();
-//            latlns.add(new LatLng(10, 15));
-//
-//            List<Integer> ints = new ArrayList<Integer>();
-//            ints.add(3);
-//
-//            List<Integer> ids = new ArrayList<Integer>();
-//            ids.add(1);
-//
-//            Goal newGoal = new Goal("testing", latlns, ints, ids, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
-//
-//            ContentValues values = new ContentValues();
-//            values.put(GoalDatabaseHelper.KEY_ID,newGoal.getID());
-//            values.put(GoalDatabaseHelper.KEY_GOALNAME,newGoal.getTitle());
-//            values.put(GoalDatabaseHelper.KEY_OCCURANCES,newGoal.getOccurance());
-//            values.put(GoalDatabaseHelper.KEY_TIMEFRAME, newGoal.getTimeFrame());
-//            values.put(GoalDatabaseHelper.KEY_COMMENTS,newGoal.getComments());
-//            values.put(GoalDatabaseHelper.KEY_STARTDATE,newGoal.getStartDate());
-//            values.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal.getEndDate());
-//            values.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal.getStartTime());
-//            values.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal.getEndTime());
-//
-////            values.put(GoalDatabaseHelper.KEY_LAT),
-//            Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI,values);
-//
-//            ArrayList<ContentValues> locationInformation = new ArrayList<ContentValues>();
-//            ContentValues a = new ContentValues();
-//            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
-//            a.put(GoalDatabaseHelper.KEY_LAT, 10);
-//            a.put(GoalDatabaseHelper.KEY_LONG, 20);
-//            a.put(GoalDatabaseHelper.KEY_RADII, 50);
-//
-//            ContentValues b = new ContentValues();
-//            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
-//            b.put(GoalDatabaseHelper.KEY_LAT, 10);
-//            b.put(GoalDatabaseHelper.KEY_LONG, 20);
-//            b.put(GoalDatabaseHelper.KEY_RADII, 50);
-//
-//            locationInformation.add(a);
-//            locationInformation.add(b);
-//            for(int i = 0; i < locationInformation.size(); i++) {
-//                getContentResolver().insert(GoalsProvider.LOCATION_URI,locationInformation.get(i));
-//            }
-//
-////            Goal newGoal = new Goal("testing2", latlns, ints, 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
-////            Bundle bundle = new Bundle();
-////            bundle.putParcelable("goal",(Parcelable)newGoal);
-////
-////            getContentResolver().call(GoalsProvider.CONTENT_URI, "addGoals", null, bundle);
-//            //mDB.addGoals(newGoal);
-//        }
-
-//        mGoals = mDB.getAllGoals();
-
-//        mGoals.add(new Goal("test goal", null, null, 0, 0, ""));
 
         mGeofenceList = new ArrayList<Geofence>();
 
@@ -272,14 +216,47 @@ public class GoalList extends AppCompatActivity implements
         with the new goal to the list of geofences
      */
     public void addGoal(Goal goal){
-//        mGoals.add(goal);
-        mDB.addGoals(goal);
-        //creates geofences from location based information in the goal and adds it to the geofence list
+
+        int id = goal.getID();
+
+        ContentValues values = new ContentValues();
+        values.put(GoalDatabaseHelper.KEY_ID,id);
+        values.put(GoalDatabaseHelper.KEY_GOALNAME,goal.getTitle());
+        values.put(GoalDatabaseHelper.KEY_OCCURANCES,goal.getOccurance());
+        values.put(GoalDatabaseHelper.KEY_TIMEFRAME, goal.getTimeFrame());
+        values.put(GoalDatabaseHelper.KEY_COMMENTS,goal.getComments());
+        values.put(GoalDatabaseHelper.KEY_STARTDATE,goal.getStartDate());
+        values.put(GoalDatabaseHelper.KEY_ENDDATE,goal.getEndDate());
+        values.put(GoalDatabaseHelper.KEY_STARTTIME,goal.getStartTime());
+        values.put(GoalDatabaseHelper.KEY_ENDTIME, goal.getEndTime());
+
+//            values.put(GoalDatabaseHelper.KEY_LAT),
+        Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI, values);
+
+
         List<LatLng> coords = goal.getLocations();
         List<Integer> radii = goal.getRadii();
         List<Integer> ids = goal.getIds();
+
+
+        ArrayList<ContentValues> locationInformation = new ArrayList<ContentValues>();
+
+
+
+
+
+
         for(int i = 0; i < coords.size(); i++){
             LatLng coord = coords.get(i);
+
+            ContentValues locationValue = new ContentValues();
+            locationValue.put(GoalDatabaseHelper.KEY_COORID, id);
+            locationValue.put(GoalDatabaseHelper.KEY_LAT, coord.latitude);
+            locationValue.put(GoalDatabaseHelper.KEY_LONG, coord.longitude);
+            locationValue.put(GoalDatabaseHelper.KEY_RADII, radii.get(i));
+
+            locationInformation.add(locationValue);
+
             mGeofenceList.add(new Geofence.Builder()
                             .setRequestId(String.valueOf(ids.get(i)))
                             .setCircularRegion(coord.latitude, coord.longitude, radii.get(i))
@@ -291,6 +268,11 @@ public class GoalList extends AppCompatActivity implements
             );
 
         }
+
+        for(int i = 0; i < locationInformation.size(); i++) {
+            getContentResolver().insert(GoalsProvider.LOCATION_URI, locationInformation.get(i));
+        }
+
         Toast toast = Toast.makeText(this, ("" + mDB.getAllGoals().size()), Toast.LENGTH_SHORT);
         toast.show();
 
