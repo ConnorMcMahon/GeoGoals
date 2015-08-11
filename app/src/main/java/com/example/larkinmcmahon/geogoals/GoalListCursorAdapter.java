@@ -14,18 +14,20 @@ import android.widget.TextView;
  */
 public class GoalListCursorAdapter extends CursorAdapter {
     private static final int COLUMN_GOALNAME = 1;
-    private static final int COLUMN_STARTDATE = 5;
-    private static final int COLUMN_STARTTIME = 6;
+    private static final int COLUMN_CURRENTOCCURRENCES = 9;
+    private static final int COLUMN_OCCURRENCES = 2;
+
 
     public static class ViewHolder {
         public final TextView headlineView;
-        public final TextView reporterNameView;
-        public final TextView reportedDateView;
+        public final TextView occurrenceRatio;
+
 
         public ViewHolder(View view) {
             headlineView = (TextView) view.findViewById(R.id.title);
-            reporterNameView = (TextView) view.findViewById(R.id.reporter);
-            reportedDateView = (TextView) view.findViewById(R.id.date);
+
+            occurrenceRatio = (TextView) view.findViewById(R.id.occurrence_ratio);
+
         }
     }
 
@@ -52,12 +54,11 @@ public class GoalListCursorAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         String goalTitle = cursor.getString(COLUMN_GOALNAME);
-        String startDate = cursor.getString(COLUMN_STARTDATE);
-        String endDate = cursor.getString(COLUMN_STARTTIME);
+        String currentOccurrences = cursor.getString(COLUMN_CURRENTOCCURRENCES);
+        String targetOccurences = cursor.getString(COLUMN_OCCURRENCES);
 
         viewHolder.headlineView.setText(goalTitle);
-        viewHolder.reporterNameView.setText(startDate);
-        viewHolder.reportedDateView.setText(endDate);
+        viewHolder.occurrenceRatio.setText(currentOccurrences + "/" + targetOccurences);
 
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -38,7 +40,7 @@ public class GoalEdit extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.men, menu);
+        getMenuInflater().inflate(R.menu.menu_add_goal, menu);
         return true;
     }
 
@@ -46,32 +48,48 @@ public class GoalEdit extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.submit_goal:
+                onClickSubmitGoal();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
-
-        return super.onOptionsItemSelected(item);
     }
 
-    public void onClickSubmitGoal(View view) {
-        String mTitle;
-        List<LatLng> mLocation;
-        List<Integer> mRadii;
-        int mOccurrences;
-        int mTimeFrame;
-        String mComments;
-        int mUpdateGoalStatusInt = 0;
-        String mUpdateGoalStatusString = null;
+    public void onClickSubmitGoal() {
 
-        EditText mEditTitle = (EditText)findViewById(R.id.goal_title_editbox);
-        //TODO: make fields for other class objects and include them here
+        FragmentManager fm = getSupportFragmentManager();
+        GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
 
-        mTitle = mEditTitle.getText().toString();
+        if(details == null || details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
+            Toast errorMessage = Toast.makeText(this, "Required Details missing", Toast.LENGTH_SHORT);
+            errorMessage.show();
+            return;
+        }
+
+
+        int mUpdateGoalStatusInt = -1;
+        String mUpdateGoalStatusString;
 
         Intent currentIntent = getIntent();
         if (currentIntent != null && currentIntent.hasExtra("dbid")) {
             int dbid = currentIntent.getIntExtra("dbid",-1);
-            String projection[] = {GoalDatabaseHelper.KEY_GOALNAME };
+            String projection[] = {GoalDatabaseHelper.KEY_GOALNAME, GoalDatabaseHelper.KEY_COMMENTS,
+            GoalDatabaseHelper.KEY_TIMEFRAME, GoalDatabaseHelper.KEY_OCCURANCES, GoalDatabaseHelper.KEY_STARTDATE,
+                    GoalDatabaseHelper.KEY_ENDDATE};
+
             ContentValues values = new ContentValues();
-            values.put(GoalDatabaseHelper.KEY_GOALNAME, mTitle);
+            values.put(GoalDatabaseHelper.KEY_GOALNAME, details.getTitle());
+            values.put(GoalDatabaseHelper.KEY_COMMENTS, details.getComment());
+            values.put(GoalDatabaseHelper.KEY_TIMEFRAME, details.getTimeFrame());
+            values.put(GoalDatabaseHelper.KEY_OCCURANCES, details.getOccurences());
+            values.put(GoalDatabaseHelper.KEY_STARTDATE, details.getStartDate());
+            values.put(GoalDatabaseHelper.KEY_ENDDATE, details.getEndDate());
+
             mUpdateGoalStatusInt = getContentResolver().update(
                     Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
                             String.valueOf(dbid)),values,null,projection);

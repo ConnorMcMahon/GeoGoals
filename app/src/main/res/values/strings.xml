@@ -16,6 +16,8 @@
     <!-- Labels -->
     <string name="goal_title_label">Title</string>
     <string name="goal_comments_label">Description</string>
+    <string name="goal_enddate_label">Ending</string>
+    <string name="goal_startdate_label">Starting</string>
 
 
     <string-array name="goal_title_suggestions">
