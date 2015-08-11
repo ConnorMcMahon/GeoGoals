@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -160,6 +158,8 @@ public class AddGoal extends ActionBarActivity {
         mGoal.setComments(details.getComment());
         mGoal.setTitle(details.getTitle());
         mGoal.setOccurance(details.getOccurences());
+        mGoal.setEndDate(details.getEndDate());
+        mGoal.setStartDate(details.getStartDate());
 
         GoalLocationFragment locationData = (GoalLocationFragment) mAddGoalPagerAdapter.getRegisteredFragment(1);
         if(locationData == null || locationData.getLocations().size() == 0){
