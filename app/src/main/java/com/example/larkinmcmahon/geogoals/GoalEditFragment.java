@@ -26,7 +26,7 @@ import java.util.Date;
 public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     Context mContext;
     private static int LOADER_ID = 2;
-    private static SimpleDateFormat dbFormat = new SimpleDateFormat("MM/dd/yyyy");
+    public static SimpleDateFormat dbFormat = new SimpleDateFormat("MM/dd/yyyy");
     public int mDbID = -1;
     private static final String[] GOAL_DETAIL_COLUMNS = {
             GoalDatabaseHelper.KEY_ID,
