@@ -118,8 +118,9 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
                 mGoalSelected = true;
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 int selectedID = cursor.getInt(COLUMN_ID);
-                GoalDetailFragment detailFragment = (GoalDetailFragment) getFragmentManager().findFragmentById(R.id.fragment_goal_detail);
-                if(detailFragment == null) { //handset layout
+//                GoalDetailFragment detailFragment = (GoalDetailFragment) getFragmentManager().findFragmentById(R.id.fragment_goal_detail);
+//                if(detailFragment == null) { //handset layout
+                if(getActivity().findViewById(R.id.fragment_goal_detail) == null) {
                     Intent intent = new Intent(getActivity(), GoalDetail.class)
                             .putExtra("dbID", selectedID);
                     startActivity(intent);
