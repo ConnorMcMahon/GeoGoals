@@ -63,8 +63,8 @@ public class GeoFenceDetectedFragment extends Fragment implements LoaderManager.
     }
 
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        if(mDbID == -1 && getArguments() != null && getArguments().containsKey("dbid")) {
-            mDbID = getArguments().getInt("dbid");
+        if(mDbID == -1 && getArguments() != null && getArguments().containsKey("dbID")) {
+            mDbID = getArguments().getInt("dbID");
         }
         if(mDbID != -1) {
             return new CursorLoader(getActivity(),

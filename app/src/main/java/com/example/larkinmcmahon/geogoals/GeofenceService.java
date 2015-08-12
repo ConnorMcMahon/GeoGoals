@@ -1,5 +1,6 @@
 package com.example.larkinmcmahon.geogoals;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,7 +11,9 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -49,7 +52,6 @@ public class GeofenceService extends IntentService implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "onStartCommand called");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -83,6 +85,7 @@ public class GeofenceService extends IntentService implements
         return mLastLocation;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
@@ -105,7 +108,8 @@ public class GeofenceService extends IntentService implements
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            Log.v(TAG, "Geofence triggered");
             GoalDatabaseHelper dbHelper = new GoalDatabaseHelper(getApplicationContext());
 
             ArrayList<Goal> goals = dbHelper.getAllGoals();
@@ -129,15 +133,18 @@ public class GeofenceService extends IntentService implements
                 }
             }
 
+            Log.d(TAG, ""+ triggeredGoals.size());
+
             for(int i = 0; i < triggeredGoals.size(); i++){
                 Goal goal = triggeredGoals.get(i);
-                goal.incrementOccurences();
+                Log.d(TAG, "ID: " + goal.getID());
+                goal.incrementOccurrences();
 
                 int dbid = goal.getID();
 
-                String projection[] = {GoalDatabaseHelper.KEY_ID };
+                String projection[] = {GoalDatabaseHelper.KEY_CURRENTOCCURENCES };
                 ContentValues values = new ContentValues();
-                values.put(GoalDatabaseHelper.KEY_ID, goal.getCurrentOccurences());
+                values.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES, goal.getCurrentOccurences());
                 int mUpdateGoalStatusInt = getContentResolver().update(
                         Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
                                 String.valueOf(dbid)),values,null,projection);
@@ -147,7 +154,7 @@ public class GeofenceService extends IntentService implements
 
                 int requestID = (int) System.currentTimeMillis();
                 Intent fenceDetectedIntent = new Intent(getApplicationContext(), GeoFenceDetected.class)
-                        .putExtra("dbID", 0); //this is set to 0 for now, should be whatever the id for the goal detected is
+                        .putExtra("dbID", dbid);
 
                 fenceDetectedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -184,16 +191,41 @@ public class GeofenceService extends IntentService implements
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
-            //Log.e(TAG, "Invalid transition type: " + geofenceTransition);
+            Log.e(TAG, "Invalid transition type: " + geofenceTransition);
         }
     }
 
-    protected String getGeofenceTransitionDetails(Context context, int geofenceTransition, List<Geofence> triggerGeofences) {
-        return "";
-    }
 
     @Override
     public Binder onBind(Intent intent) {
         return mBinder;
+    }
+
+    private String getGeofenceTransitionDetails(
+            Context context,
+            int geofenceTransition,
+            List<Geofence> triggeringGeofences) {
+
+        String geofenceTransitionString = getTransitionString(geofenceTransition);
+
+        // Get the Ids of each geofence that was triggered.
+        ArrayList triggeringGeofencesIdsList = new ArrayList();
+        for (Geofence geofence : triggeringGeofences) {
+            triggeringGeofencesIdsList.add(geofence.getRequestId());
+        }
+        String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
+
+        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+    }
+
+    private String getTransitionString(int transitionType) {
+        switch (transitionType) {
+            case Geofence.GEOFENCE_TRANSITION_ENTER:
+                return "Entered:";
+            case Geofence.GEOFENCE_TRANSITION_EXIT:
+                return "Exited:";
+            default:
+                return "?:";
+        }
     }
 }

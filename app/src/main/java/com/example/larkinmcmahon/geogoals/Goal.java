@@ -192,7 +192,7 @@ public class Goal implements Parcelable {
         return mCurrentOccurrences;
     }
 
-    public void incrementOccurences() {
+    public void incrementOccurrences() {
         mCurrentOccurrences++;
     }
 
