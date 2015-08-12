@@ -164,6 +164,7 @@ public class AddGoal extends ActionBarActivity {
         mGoal.setOccurance(details.getOccurences());
         mGoal.setEndDate(details.getEndDate());
         mGoal.setStartDate(details.getStartDate());
+        mGoal.setCategory(details.getCategory());
 
         GoalLocationFragment locationData = (GoalLocationFragment) mAddGoalPagerAdapter.getRegisteredFragment(1);
         if(locationData == null || locationData.getLocations().size() == 0){
