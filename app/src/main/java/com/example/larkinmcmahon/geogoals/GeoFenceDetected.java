@@ -70,6 +70,11 @@ public class GeoFenceDetected extends AppCompatActivity/*FragmentActivity*/ impl
         }
     }
 
+    public void redirectToHome(View view){
+        Intent intent = new Intent(this, GoalList.class);
+        startActivity(intent);
+    }
+
 
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(mDbID != -1) {

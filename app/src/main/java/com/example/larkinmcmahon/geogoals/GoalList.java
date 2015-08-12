@@ -24,6 +24,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
+
+
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -70,14 +72,14 @@ public class GoalList extends AppCompatActivity implements
         Intent intent = new Intent(this, GeofenceService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
-        return PendingIntent.getService(this, 0, intent, PendingIntent.
+        return PendingIntent.getService(this, 10000, intent, PendingIntent.
                 FLAG_UPDATE_CURRENT);
     }
 
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
         builder.addGeofences(mGeofenceList);
 
@@ -94,81 +96,6 @@ public class GoalList extends AppCompatActivity implements
 
         mDB = new GoalDatabaseHelper(getApplicationContext());
 
-
-        if(mDB.getAllGoals().size() == 0) {
-            List<LatLng> latlns = new ArrayList<>();
-            latlns.add(new LatLng(10, 15));
-
-            List<Integer> ints = new ArrayList<Integer>();
-            ints.add(3);
-            Goal newGoal = new Goal("testing", latlns, ints, new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00",1);
-
-            ContentValues values = new ContentValues();
-            values.put(GoalDatabaseHelper.KEY_ID,newGoal.getID());
-            values.put(GoalDatabaseHelper.KEY_GOALNAME,newGoal.getTitle());
-            values.put(GoalDatabaseHelper.KEY_OCCURANCES,newGoal.getOccurance());
-            values.put(GoalDatabaseHelper.KEY_TIMEFRAME, newGoal.getTimeFrame());
-            values.put(GoalDatabaseHelper.KEY_COMMENTS,newGoal.getComments());
-            values.put(GoalDatabaseHelper.KEY_STARTDATE,newGoal.getStartDate());
-            values.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal.getEndDate());
-            values.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal.getStartTime());
-            values.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal.getEndTime());
-            values.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES,newGoal.getCurrentOccurences());
-            values.put(GoalDatabaseHelper.KEY_CATEGORY,newGoal.getCategory());
-
-//            values.put(GoalDatabaseHelper.KEY_LAT),
-            Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI,values);
-
-            ArrayList<ContentValues> locationInformation = new ArrayList<ContentValues>();
-            ContentValues a = new ContentValues();
-            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
-            a.put(GoalDatabaseHelper.KEY_LAT, 10);
-            a.put(GoalDatabaseHelper.KEY_LONG, 20);
-            a.put(GoalDatabaseHelper.KEY_RADII, 50);
-
-            ContentValues b = new ContentValues();
-            a.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
-            b.put(GoalDatabaseHelper.KEY_LAT, 10);
-            b.put(GoalDatabaseHelper.KEY_LONG, 20);
-            b.put(GoalDatabaseHelper.KEY_RADII, 50);
-
-            locationInformation.add(a);
-            locationInformation.add(b);
-            for(int i = 0; i < locationInformation.size(); i++) {
-                getContentResolver().insert(GoalsProvider.LOCATION_URI,locationInformation.get(i));
-            }
-
-            Goal newGoal2 = new Goal("testing2", latlns, ints,new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00",2);
-
-            ContentValues values2 = new ContentValues();
-            values2.put(GoalDatabaseHelper.KEY_ID,newGoal2.getID());
-            values2.put(GoalDatabaseHelper.KEY_GOALNAME,newGoal2.getTitle());
-            values2.put(GoalDatabaseHelper.KEY_OCCURANCES,newGoal2.getOccurance());
-            values2.put(GoalDatabaseHelper.KEY_TIMEFRAME, newGoal2.getTimeFrame());
-            values2.put(GoalDatabaseHelper.KEY_COMMENTS,newGoal2.getComments());
-            values2.put(GoalDatabaseHelper.KEY_STARTDATE,newGoal2.getStartDate());
-            values2.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal2.getEndDate());
-            values2.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal2.getStartTime());
-            values2.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal2.getEndTime());
-            values2.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES,newGoal2.getCurrentOccurences());
-            values2.put(GoalDatabaseHelper.KEY_CATEGORY,newGoal2.getCategory());
-
-//            values.put(GoalDatabaseHelper.KEY_LAT),
-            Uri insertVal2 = getContentResolver().insert(GoalsProvider.CONTENT_URI,values2);
-
-            ArrayList<ContentValues> locationInformation1 = new ArrayList<ContentValues>();
-            ContentValues a1 = new ContentValues();
-            a1.put(GoalDatabaseHelper.KEY_COORID,newGoal.getID());
-            a1.put(GoalDatabaseHelper.KEY_LAT, 10);
-            a1.put(GoalDatabaseHelper.KEY_LONG, 20);
-            a1.put(GoalDatabaseHelper.KEY_RADII, 50);
-
-            locationInformation.add(a1);
-
-            for(int i = 0; i < locationInformation1.size(); i++) {
-                getContentResolver().insert(GoalsProvider.LOCATION_URI,locationInformation1.get(i));
-            }
-        }
 
         Goal.setCurrentID(mDB.getGoalCount());
 
@@ -422,9 +349,8 @@ public class GoalList extends AppCompatActivity implements
                             .setRequestId(String.valueOf(ids.get(i)))
                             .setCircularRegion(coord.latitude, coord.longitude, radii.get(i))
                                     //sets expiration date for 1 week
-                            .setExpirationDuration(1000 * 3600 * 24 * 7)
-                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                            .setLoiteringDelay(10000) //10 seconds for testing purposes
+                            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                             .build()
             );
 

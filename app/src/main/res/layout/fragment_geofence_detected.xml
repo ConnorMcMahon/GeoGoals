@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Yes, this is correct."
-        android:id="@+id/button2" />
+        android:id="@+id/button2"
+        android:onClick="redirectToHome"/>
 
     <Button
         android:layout_width="wrap_content"
