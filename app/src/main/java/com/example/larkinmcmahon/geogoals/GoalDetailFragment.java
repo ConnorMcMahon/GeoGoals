@@ -82,7 +82,8 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        if(mDbID == -1 && getArguments() != null && getArguments().containsKey("dbid")) {
+//        if((mDbID == -1 && getArguments() != null && getArguments().containsKey("dbid")) || (getArguments() != null && getArguments().containsKey("reload") && getArguments().getInt("reload") == 1)) {
+          if( getArguments() != null && getArguments().containsKey("dbid")) {
             mDbID = getArguments().getInt("dbid");
         }
         if(mDbID != -1) {

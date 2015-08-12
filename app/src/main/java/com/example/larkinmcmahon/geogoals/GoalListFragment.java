@@ -121,7 +121,6 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
                 else { //tablet layout
                     Bundle args = new Bundle();
                     args.putInt("dbid",selectedID);
-
                     GoalDetailFragment newFragment = new GoalDetailFragment();
                     newFragment.setArguments(args);
 

@@ -245,14 +245,18 @@ public class GoalList extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_goal_detail, newFragment, "GOALEDITFRAGMENT")
                         .commit();
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.fragment_goal_edit,newFragment,"editTag")
+//                        .commit();
                 detailViewShowing = !detailViewShowing;
                 invalidateOptionsMenu();
             }
             else if(id == R.id.submit_goal) {
                 FragmentManager fm = getSupportFragmentManager();
-                GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
+//                GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
+                GoalEditFragment details = (GoalEditFragment) fm.findFragmentByTag("GOALEDITFRAGMENT");
 
-                if(details == null || details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
+                if (details == null || details.getOccurences() == -1 || details.getTimeFrame() == -1 || details.getTitle() == "") {
                     Toast errorMessage = Toast.makeText(this, "Required Details missing", Toast.LENGTH_SHORT);
                     errorMessage.show();
                     return false;
@@ -260,11 +264,13 @@ public class GoalList extends AppCompatActivity implements
 
 
                 int mUpdateGoalStatusInt = -1;
+                int dbid = -1;
                 String mUpdateGoalStatusString;
-
-                Intent currentIntent = getIntent();
-                if (currentIntent != null && currentIntent.hasExtra("dbid")) {
-                    int dbid = currentIntent.getIntExtra("dbid",-1);
+                if (details.getArguments() != null) {
+                    dbid = details.getArguments().getInt("dbid");
+//                Intent currentIntent = getIntent();
+//                if (currentIntent != null && currentIntent.hasExtra("dbid")) {
+//                    int dbid = currentIntent.getIntExtra("dbid",-1);
                     String projection[] = {GoalDatabaseHelper.KEY_GOALNAME, GoalDatabaseHelper.KEY_COMMENTS,
                             GoalDatabaseHelper.KEY_TIMEFRAME, GoalDatabaseHelper.KEY_OCCURANCES, GoalDatabaseHelper.KEY_STARTDATE,
                             GoalDatabaseHelper.KEY_ENDDATE};
@@ -279,7 +285,7 @@ public class GoalList extends AppCompatActivity implements
 
                     mUpdateGoalStatusInt = getContentResolver().update(
                             Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
-                                    String.valueOf(dbid)),values,null,projection);
+                                    String.valueOf(dbid)), values, null, projection);
                 }
 
                 if(mUpdateGoalStatusInt > 0){
@@ -288,6 +294,19 @@ public class GoalList extends AppCompatActivity implements
                 else {
                     mUpdateGoalStatusString = "Failure";
                 }
+
+                detailViewShowing = !detailViewShowing;
+                invalidateOptionsMenu();
+
+                Bundle args = new Bundle();
+                args.putInt("dbid",dbid);
+
+                GoalDetailFragment newFragment = new GoalDetailFragment();
+                newFragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_goal_detail, newFragment, "GOALDETAILFRAGMENT")
+                        .commit();
             }
         }
         else {
