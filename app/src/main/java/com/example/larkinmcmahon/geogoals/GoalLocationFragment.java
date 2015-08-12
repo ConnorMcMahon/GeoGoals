@@ -51,7 +51,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     private List<Marker> mMarkers;
     final private double SEARCH_DISTANCE = .3; //Around 30 km
     private List<LatLng> mCoords;
-    final private int RADIUS = 1000;
+    final private int RADIUS = 1000*5;
     private List<Integer> mIds;
 
     private ServiceConnection mConnection;
