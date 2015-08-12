@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         />
 
-    <fragment
+    <FrameLayout
         android:id="@+id/fragment_goal_detail"
         android:name="com.example.larkinmcmahon.geogoals.GoalDetailFragment"
         tools:layout="@layout/fragment_goal_detail"
