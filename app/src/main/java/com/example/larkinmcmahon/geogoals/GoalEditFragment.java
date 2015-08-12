@@ -89,10 +89,6 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
         mEditGoalStartDate = ((TextView) getActivity().findViewById(R.id.goal_startdate_edittext));
         mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.goal_enddate_edittext));
 

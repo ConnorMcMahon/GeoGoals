@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class GoalList extends AppCompatActivity implements
     private ArrayList<Goal> mGoals;
     private GoalDatabaseHelper mDB;
     private boolean mTabletView = false;
+    private boolean detailViewShowing = true;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -172,7 +174,9 @@ public class GoalList extends AppCompatActivity implements
 
         mGoalList = (GoalListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
 
-
+        if(getSupportFragmentManager().findFragmentById(R.id.fragment_goal_detail) != null) {
+            mTabletView = true;
+        }
     }
 
 
@@ -188,7 +192,12 @@ public class GoalList extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_goal_list, menu);
+        if(detailViewShowing) {
+            getMenuInflater().inflate(R.menu.menu_goal_detail, menu);
+        }
+        else {
+            getMenuInflater().inflate(R.menu.menu_add_goal, menu);
+        }
         return true;
     }
 
@@ -225,14 +234,10 @@ public class GoalList extends AppCompatActivity implements
         if(mTabletView) {
             if (id == R.id.action_editGoal) {
                 GoalDetailFragment detailFragment = (GoalDetailFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_goal_detail);
-//                Intent currentIntent = getIntent();
-//                int dbid = currentIntent.getIntExtra("dbid",0);
-//                Intent intent = new Intent(this, GoalEdit.class)
-//                        .putExtra("dbid", detailFragment.mDbID);
-//                startActivity(intent);
+
                 int selectedID = detailFragment.mDbID;
                 Bundle args = new Bundle();
-                args.putInt("dbid",selectedID);
+                args.putInt("dbid", selectedID);
 
                 GoalEditFragment newFragment = new GoalEditFragment();
                 newFragment.setArguments(args);
@@ -240,6 +245,49 @@ public class GoalList extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_goal_detail, newFragment, "GOALEDITFRAGMENT")
                         .commit();
+                detailViewShowing = !detailViewShowing;
+                invalidateOptionsMenu();
+            }
+            else if(id == R.id.submit_goal) {
+                FragmentManager fm = getSupportFragmentManager();
+                GoalEditFragment details = (GoalEditFragment) fm.findFragmentById(R.id.fragment_goal_edit);
+
+                if(details == null || details.getOccurences() == -1 || details.getTimeFrame()==-1 || details.getTitle() == ""){
+                    Toast errorMessage = Toast.makeText(this, "Required Details missing", Toast.LENGTH_SHORT);
+                    errorMessage.show();
+                    return false;
+                }
+
+
+                int mUpdateGoalStatusInt = -1;
+                String mUpdateGoalStatusString;
+
+                Intent currentIntent = getIntent();
+                if (currentIntent != null && currentIntent.hasExtra("dbid")) {
+                    int dbid = currentIntent.getIntExtra("dbid",-1);
+                    String projection[] = {GoalDatabaseHelper.KEY_GOALNAME, GoalDatabaseHelper.KEY_COMMENTS,
+                            GoalDatabaseHelper.KEY_TIMEFRAME, GoalDatabaseHelper.KEY_OCCURANCES, GoalDatabaseHelper.KEY_STARTDATE,
+                            GoalDatabaseHelper.KEY_ENDDATE};
+
+                    ContentValues values = new ContentValues();
+                    values.put(GoalDatabaseHelper.KEY_GOALNAME, details.getTitle());
+                    values.put(GoalDatabaseHelper.KEY_COMMENTS, details.getComment());
+                    values.put(GoalDatabaseHelper.KEY_TIMEFRAME, details.getTimeFrame());
+                    values.put(GoalDatabaseHelper.KEY_OCCURANCES, details.getOccurences());
+                    values.put(GoalDatabaseHelper.KEY_STARTDATE, details.getStartDate());
+                    values.put(GoalDatabaseHelper.KEY_ENDDATE, details.getEndDate());
+
+                    mUpdateGoalStatusInt = getContentResolver().update(
+                            Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
+                                    String.valueOf(dbid)),values,null,projection);
+                }
+
+                if(mUpdateGoalStatusInt > 0){
+                    mUpdateGoalStatusString = "Success";
+                }
+                else {
+                    mUpdateGoalStatusString = "Failure";
+                }
             }
         }
         else {
