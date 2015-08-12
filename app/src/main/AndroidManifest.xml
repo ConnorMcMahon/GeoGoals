@@ -26,10 +26,6 @@
             android:name=".GeofenceService"
             android:enabled="true" />
 
-        <service
-            android:name=".CheckGoal"
-            android:enabled="true" />
-
         <activity
             android:name=".GoalList"
             android:label="@string/app_name" >
