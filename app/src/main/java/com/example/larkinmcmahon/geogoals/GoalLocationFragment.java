@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -154,6 +155,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
         mConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service){
+
                 Log.i(TAG, "Connected to service.");
                 GeofenceService.GeofenceBinder binder = (GeofenceService.GeofenceBinder) service;
                 mGeofenceService = binder.getService();
@@ -172,9 +174,15 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                     CameraUpdate zoomIn = CameraUpdateFactory.newCameraPosition(camPos);
                     mMap = fragment.getMap();
                     mMap.moveCamera(zoomIn);
+                    setUpMap();
 
+                } else {
+                    Toast noLocationToast = Toast.makeText(getActivity(), "Couldn't connect to location services!", Toast.LENGTH_LONG);
+                    noLocationToast.show();
+                    Intent backToHome = new Intent(getActivity(), GoalList.class);
+                    startActivity(backToHome);
                 }
-                setUpMap();
+
             }
 
             @Override
@@ -212,6 +220,8 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng coords) {

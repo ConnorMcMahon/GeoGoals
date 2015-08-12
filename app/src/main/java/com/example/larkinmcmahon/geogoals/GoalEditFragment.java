@@ -123,7 +123,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
 
     public int getOccurences(){
         String occurrences = ((TextView) getActivity().findViewById(R.id.goal_occurrences_editbox)).getText().toString();
-        if(occurrences == null){
+        if(occurrences == null || occurrences.equals("")){
             return -1;
         }
         return Integer.parseInt(occurrences);
@@ -131,7 +131,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
 
     public int getTimeFrame(){
         String timeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox)).getText().toString();
-        if(timeframe == null){
+        if(timeframe == null || timeframe.equals("")){
             return -1;
         }
         return Integer.parseInt(timeframe);
