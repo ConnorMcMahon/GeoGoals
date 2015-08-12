@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +37,26 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
             GoalDatabaseHelper.KEY_STARTTIME,
             GoalDatabaseHelper.KEY_ENDDATE,
             GoalDatabaseHelper.KEY_ENDTIME,
+            GoalDatabaseHelper.KEY_CATEGORY
     };
 
     //correlate with GOAL_DETAIL_COLUMNS
     private static final int COLUMN_GOALNAME = 1;
+    private static final int COLUMN_OCCURRENCES = 2;
+    private static final int COLUMN_TIMEFRAME = 3;
+    private static final int COLUMN_COMMENTS = 4;
+    private static final int COLUMN_STARTDATE = 5;
+    private static final int COLUMN_ENDDATE = 7;
+    private static final int COLUMN_CATEGORY = 9;
 
     private TextView mGoalNameTextView;
+    private TextView mEditGoalComments;
+    private TextView mEditGoalOccurrences;
+    private TextView mEditGoalTimeframe;
+    private TextView mEditGoalStartDate;
+    private TextView mEditGoalEndDate;
+    private TextView mEditGoalCategory;
+    private ImageView mEditGoalCategoryImage;
 
     public GoalDetailFragment() {
     }
@@ -71,7 +87,7 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
             mDbID = getArguments().getInt("dbid");
         }
         //getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-        mGoalNameTextView = (TextView) rootView.findViewById(R.id.fragment_goal_detail_title_text);
+
         return rootView;
     }
 
@@ -102,8 +118,43 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         cursor.moveToFirst();
         String mGoalNameText = cursor.getString(COLUMN_GOALNAME);
+        String mGoalCommentsText = cursor.getString(COLUMN_COMMENTS);
+        String mGoalOccurrencesText = cursor.getString(COLUMN_OCCURRENCES);
+        String mGoalTimeframeText = cursor.getString(COLUMN_TIMEFRAME);
+        String mGoalStartDateText = cursor.getString(COLUMN_STARTDATE);
+        String mGoalEndDateText = cursor.getString(COLUMN_ENDDATE);
+        String mCategory = cursor.getString(COLUMN_CATEGORY);
+
+        mGoalNameTextView = (TextView) getActivity().findViewById(R.id.fragment_goal_detail_title_text);
+        mEditGoalComments = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_comment_text));
+        mEditGoalOccurrences = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_occurances_text));
+        mEditGoalTimeframe = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_timeframe_text));
+        mEditGoalStartDate = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_startdate_text));
+        mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_enddate_text));
+        mEditGoalCategory = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_category_text));
+        mEditGoalCategoryImage = ((ImageView) getActivity().findViewById(R.id.fragment_goal_detail_category_image));
 
         mGoalNameTextView.setText(mGoalNameText);
+        mEditGoalComments.setText(mGoalCommentsText);
+        mEditGoalOccurrences.setText(mGoalOccurrencesText);
+        mEditGoalTimeframe.setText(mGoalTimeframeText);
+        mEditGoalStartDate.setText(mGoalStartDateText);
+        mEditGoalEndDate.setText(mGoalEndDateText);
+        mEditGoalCategory.setText(mCategory);
+
+        switch(mCategory) {
+            case "1":
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_gym);
+                break;
+            case "2":
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_school);
+                break;
+            case "3":
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_other);
+                break;
+            default:
+                mEditGoalCategoryImage.setImageResource(R.mipmap.ic_launcher);
+        }
 
     }
 

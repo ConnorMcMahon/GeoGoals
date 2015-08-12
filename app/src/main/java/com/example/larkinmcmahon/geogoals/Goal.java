@@ -31,14 +31,14 @@ public class Goal implements Parcelable {
     private String mEndDate;
     private String mEndTime;
     private int mCurrentOccurrences;
-
+    private int mCategory;
 
     public Goal() {
 
     }
 
     public Goal(int id, String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs,
-                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT, int currentOccurences) {
+                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT, int currentOccurences, int category) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
@@ -52,10 +52,10 @@ public class Goal implements Parcelable {
         mEndTime = endT;
         mGeofenceIDs = geofenceIDs;
         mCurrentOccurrences = currentOccurences;
-
+        mCategory = category;
     }
     public Goal(String title, List<LatLng> locations, List<Integer> radii, List<Integer> geofenceIDs,
-                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT) {
+                int occurrences, int timeFrame, String comments, String startD, String endD, String startT, String endT, int category) {
         mTitle = title;
         mLocations = locations;
         mRadii = radii;
@@ -69,6 +69,7 @@ public class Goal implements Parcelable {
         mEndTime = endT;
         mGeofenceIDs = geofenceIDs;
         mCurrentOccurrences = 0;
+        mCategory = category;
         id++;
     }
 
@@ -86,6 +87,7 @@ public class Goal implements Parcelable {
         mStartTime = "";
         mEndTime = "";
         mCurrentOccurrences = 0;
+        mCategory = 0;
         id++;
     }
 
@@ -103,6 +105,7 @@ public class Goal implements Parcelable {
         mStartTime = in.readString();
         mEndTime = in.readString();
         mCurrentOccurrences = in.readInt();
+        mCategory = in.readInt();
         //id++;
         in.readTypedList(mLocations, LatLng.CREATOR);
         in.readList(mRadii, Integer.class.getClassLoader());
@@ -203,6 +206,10 @@ public class Goal implements Parcelable {
     public List<Integer> getIds() {
         return mGeofenceIDs;
     }
+
+    public int getCategory() {return mCategory;}
+
+    public void setCategory(int category) {mCategory = category;}
 
     //unsure what to put here
     public int describeContents(){

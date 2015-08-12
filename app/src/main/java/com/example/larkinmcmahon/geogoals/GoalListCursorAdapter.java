@@ -24,6 +24,7 @@ public class GoalListCursorAdapter extends CursorAdapter {
     private static final int COLUMN_COMMENTS = 4;
     private static final int COLUMN_STARTDATE = 5;
     private static final int COLUMN_TIMEFRAME = 3;
+    private static final int COLUMN_CATEGORY = 10;
 
 
     public static class ViewHolder {
@@ -31,14 +32,30 @@ public class GoalListCursorAdapter extends CursorAdapter {
         public final TextView occurrenceRatio;
         public final TextView comment;
         public final TextView deadline;
+        public final ImageView image;
 
 
         public ViewHolder(View view) {
             headlineView = (TextView) view.findViewById(R.id.title);
-
             occurrenceRatio = (TextView) view.findViewById(R.id.occurrence_ratio);
             comment = (TextView) view.findViewById(R.id.itemview_comment);
             deadline = (TextView) view.findViewById(R.id.itemview_deadline);
+            image = (ImageView) view.findViewById(R.id.goal_list_image);
+
+            headlineView.setFocusableInTouchMode(false);
+            headlineView.setFocusable(false);
+
+            occurrenceRatio.setFocusableInTouchMode(false);
+            occurrenceRatio.setFocusable(false);
+
+            comment.setFocusableInTouchMode(false);
+            comment.setFocusable(false);
+
+            deadline.setFocusableInTouchMode(false);
+            deadline.setFocusable(false);
+
+            image.setFocusableInTouchMode(false);
+            image.setFocusable(false);
 
         }
     }
@@ -46,7 +63,15 @@ public class GoalListCursorAdapter extends CursorAdapter {
     public GoalListCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
+    @Override
+    public boolean areAllItemsEnabled() {
+        return true;
+    }
 
+    @Override
+    public boolean isEnabled(int position) {
+        return true;
+    }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
@@ -71,6 +96,7 @@ public class GoalListCursorAdapter extends CursorAdapter {
         String comment = cursor.getString(COLUMN_COMMENTS);
         int timeframe = cursor.getInt(COLUMN_TIMEFRAME);
         String dateString = cursor.getString(COLUMN_STARTDATE);
+        int category = cursor.getInt(COLUMN_CATEGORY);
 
         int deadline = calculateDeadline(dateString, timeframe);
 
@@ -79,7 +105,19 @@ public class GoalListCursorAdapter extends CursorAdapter {
         viewHolder.comment.setText(comment);
         viewHolder.deadline.setText(timeframe + " days left");
 
-
+        switch(category) {
+            case 1:
+                viewHolder.image.setImageResource(R.mipmap.category_gym);
+                break;
+            case 2:
+                viewHolder.image.setImageResource(R.mipmap.category_school);
+                break;
+            case 3:
+                viewHolder.image.setImageResource(R.mipmap.category_other);
+                break;
+            default:
+                viewHolder.image.setImageResource(R.mipmap.ic_launcher);
+        }
     }
 
     public static int calculateDeadline(String dateString, int timeframe){

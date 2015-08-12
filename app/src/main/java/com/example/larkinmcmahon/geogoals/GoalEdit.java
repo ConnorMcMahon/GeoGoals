@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +81,7 @@ public class GoalEdit extends AppCompatActivity{
             int dbid = currentIntent.getIntExtra("dbid",-1);
             String projection[] = {GoalDatabaseHelper.KEY_GOALNAME, GoalDatabaseHelper.KEY_COMMENTS,
             GoalDatabaseHelper.KEY_TIMEFRAME, GoalDatabaseHelper.KEY_OCCURANCES, GoalDatabaseHelper.KEY_STARTDATE,
-                    GoalDatabaseHelper.KEY_ENDDATE};
+                    GoalDatabaseHelper.KEY_ENDDATE, GoalDatabaseHelper.KEY_CATEGORY};
 
             ContentValues values = new ContentValues();
             values.put(GoalDatabaseHelper.KEY_GOALNAME, details.getTitle());
@@ -89,6 +90,7 @@ public class GoalEdit extends AppCompatActivity{
             values.put(GoalDatabaseHelper.KEY_OCCURANCES, details.getOccurences());
             values.put(GoalDatabaseHelper.KEY_STARTDATE, details.getStartDate());
             values.put(GoalDatabaseHelper.KEY_ENDDATE, details.getEndDate());
+            values.put(GoalDatabaseHelper.KEY_CATEGORY, details.getCategory());
 
             mUpdateGoalStatusInt = getContentResolver().update(
                     Uri.withAppendedPath(GoalsProvider.CONTENT_URI,
@@ -107,6 +109,21 @@ public class GoalEdit extends AppCompatActivity{
                 .putExtra("intentType", "SQLUpdate")
                 .putExtra("intentMsg",mUpdateGoalStatusString);
         startActivity(intent);
+    }
+
+    public void updateImageToGym(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_gym);
+    }
+
+    public void updateImageToSchool(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_school);
+    }
+
+    public void updateImageToOther(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_other);
     }
 }
 

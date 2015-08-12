@@ -12,6 +12,9 @@
     <string name="title_activity_goal_edit">Goal Edit</string>
     <string name="title_activity_goal_delete">Delete Goal</string>
     <string name="action_add_goal">Add New Goal</string>
+    <string name="radio_gym_string">Gym</string>
+    <string name="radio_school_string">School</string>
+    <string name="radio_other_string">Other</string>
 
     <!-- Labels -->
     <string name="goal_title_label">Title</string>

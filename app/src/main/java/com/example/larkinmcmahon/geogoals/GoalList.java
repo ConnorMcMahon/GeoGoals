@@ -101,7 +101,7 @@ public class GoalList extends AppCompatActivity implements
 
             List<Integer> ints = new ArrayList<Integer>();
             ints.add(3);
-            Goal newGoal = new Goal("testing", latlns, ints, new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
+            Goal newGoal = new Goal("testing", latlns, ints, new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00",1);
 
             ContentValues values = new ContentValues();
             values.put(GoalDatabaseHelper.KEY_ID,newGoal.getID());
@@ -113,6 +113,8 @@ public class GoalList extends AppCompatActivity implements
             values.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal.getEndDate());
             values.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal.getStartTime());
             values.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal.getEndTime());
+            values.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES,newGoal.getCurrentOccurences());
+            values.put(GoalDatabaseHelper.KEY_CATEGORY,newGoal.getCategory());
 
 //            values.put(GoalDatabaseHelper.KEY_LAT),
             Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI,values);
@@ -136,7 +138,7 @@ public class GoalList extends AppCompatActivity implements
                 getContentResolver().insert(GoalsProvider.LOCATION_URI,locationInformation.get(i));
             }
 
-            Goal newGoal2 = new Goal("testing2", latlns, ints,new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00");
+            Goal newGoal2 = new Goal("testing2", latlns, ints,new ArrayList<Integer>(), 0, 1, "comment","01-01-15","8:00","02-02-15","10:00",2);
 
             ContentValues values2 = new ContentValues();
             values2.put(GoalDatabaseHelper.KEY_ID,newGoal2.getID());
@@ -148,6 +150,8 @@ public class GoalList extends AppCompatActivity implements
             values2.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal2.getEndDate());
             values2.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal2.getStartTime());
             values2.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal2.getEndTime());
+            values2.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES,newGoal2.getCurrentOccurences());
+            values2.put(GoalDatabaseHelper.KEY_CATEGORY,newGoal2.getCategory());
 
 //            values.put(GoalDatabaseHelper.KEY_LAT),
             Uri insertVal2 = getContentResolver().insert(GoalsProvider.CONTENT_URI,values2);
@@ -194,11 +198,12 @@ public class GoalList extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(detailViewShowing) {
-            getMenuInflater().inflate(R.menu.menu_goal_detail, menu);
-        }
-        else {
-            getMenuInflater().inflate(R.menu.menu_add_goal, menu);
+        if(mTabletView) {
+            if (detailViewShowing) {
+                getMenuInflater().inflate(R.menu.menu_goal_detail, menu);
+            } else {
+                getMenuInflater().inflate(R.menu.menu_add_goal, menu);
+            }
         }
         return true;
     }
@@ -211,17 +216,19 @@ public class GoalList extends AppCompatActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        GoalListFragment listFragment = (GoalListFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_goal_listview);
-        boolean goalSelected = listFragment.mGoalSelected;
-        MenuItem item = menu.findItem(R.id.action_editGoal);
-        if(item != null) {
-            if (goalSelected) {
-                item.setEnabled(true);
+        if(mTabletView) {
+            GoalListFragment listFragment = (GoalListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_goal_listview);
+            boolean goalSelected = listFragment.mGoalSelected;
+            MenuItem item = menu.findItem(R.id.action_editGoal);
+            if (item != null) {
+                if (goalSelected) {
+                    item.setEnabled(true);
 //                item.getIcon().setAlpha(255);
-                //item.setVisible(true);
-            } else {
-                item.setEnabled(false);
-                // item.setVisible(false);
+                    //item.setVisible(true);
+                } else {
+                    item.setEnabled(false);
+                    // item.setVisible(false);
+                }
             }
         }
         return true;

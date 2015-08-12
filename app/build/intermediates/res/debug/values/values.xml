@@ -379,6 +379,9 @@
     <!-- From: file:/Users/djflash/GeoGoals/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="new_goal_button">Add goal</string>
+    <string name="radio_gym_string">Gym</string>
+    <string name="radio_other_string">Other</string>
+    <string name="radio_school_string">School</string>
     <!-- From: file:/Users/djflash/GeoGoals/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>

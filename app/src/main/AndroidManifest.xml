@@ -64,6 +64,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".GoalDelete"
+            android:label="Delete Goal"
+            android:parentActivityName=".GoalList" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".DonationWebViewActivity"
             android:label="Make A Donation!"
             android:parentActivityName=".GeoDonationList" >
@@ -91,11 +99,6 @@
             android:label="@string/title_activity_geofence_detected" >
         </activity>
 
-        <service
-            android:name=".CheckGoal"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
     </application>
 
 </manifest>

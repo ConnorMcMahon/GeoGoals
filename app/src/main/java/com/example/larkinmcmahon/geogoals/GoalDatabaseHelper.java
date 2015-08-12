@@ -40,6 +40,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_STARTTIME = "startTime";
     public static final String KEY_ENDTIME = "endTime";
     public static final String KEY_CURRENTOCCURENCES = "currentOccurences";
+    public static final String KEY_CATEGORY = "category";
 
     public static final String KEY_COORID = "coorID";
     public static final String KEY_LAT = "lat";
@@ -67,7 +68,8 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ENDDATE + " TEXT,"
                 + KEY_STARTTIME + " TEXT,"
                 + KEY_ENDTIME + " TEXT,"
-                + KEY_CURRENTOCCURENCES + " TEXT" + ")";
+                + KEY_CURRENTOCCURENCES + " TEXT,"
+                + KEY_CATEGORY + " TEXT" + ")";
 
         String CREATE_LOCATIONS_TABLE = "CREATE TABLE " + TABLE_LOCATIONS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
@@ -132,6 +134,7 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
         goalValues.put(KEY_STARTTIME, goal.getStartTime());
         goalValues.put(KEY_ENDTIME, goal.getEndTime());
         goalValues.put(KEY_CURRENTOCCURENCES, goal.getCurrentOccurences());
+        goalValues.put(KEY_CATEGORY, goal.getCategory());
 
         // Inserting Row
         long insertVal = db.insert(TABLE_Goals, null, goalValues);
@@ -178,7 +181,8 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(6),
                 cursor.getString(7),
                 cursor.getString(8),
-                cursor.getInt(9)
+                cursor.getInt(9),
+                cursor.getInt(10)
         );
         return goal;
     }
@@ -237,7 +241,8 @@ public class GoalDatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(6),
                         cursor.getString(7),
                         cursor.getString(8),
-                        cursor.getInt(9)
+                        cursor.getInt(9),
+                        cursor.getInt(10)
                 );
 
 

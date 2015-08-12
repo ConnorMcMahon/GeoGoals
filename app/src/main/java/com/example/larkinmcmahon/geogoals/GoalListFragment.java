@@ -54,7 +54,8 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
             GoalDatabaseHelper.KEY_STARTTIME,
             GoalDatabaseHelper.KEY_ENDDATE,
             GoalDatabaseHelper.KEY_ENDTIME,
-            GoalDatabaseHelper.KEY_CURRENTOCCURENCES
+            GoalDatabaseHelper.KEY_CURRENTOCCURENCES,
+            GoalDatabaseHelper.KEY_CATEGORY
     };
 
     private static final int COLUMN_ID = 0;
@@ -91,6 +92,8 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
         mAddGoalButton = new Button(getActivity());
 
         mAddGoalButton.setText(R.string.new_goal_button);
+        mAddGoalButton.setFocusableInTouchMode(false);
+        mAddGoalButton.setFocusable(false);
         mAddGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,8 +168,11 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenuInfo menuInfo) {
         if (v.getId()==R.id.fragment_goal_listview) {
+            ListView listview = (ListView) v.findViewById(R.id.fragment_goal_listview);
+
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            menu.setHeaderTitle(mGoalStrings.get(info.position));
+            Cursor goal = (Cursor)listview.getItemAtPosition(info.position);
+            menu.setHeaderTitle(goal.getString(1));
             String[] menuItems = getResources().getStringArray(R.array.activity_main_context_menu);
             for (int i = 0; i<menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
@@ -183,21 +189,25 @@ public class GoalListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        ListView listview = (ListView) getActivity().findViewById(R.id.fragment_goal_listview);
+        Cursor goal = (Cursor)listview.getItemAtPosition(info.position);
         Intent intent;
         int dbid;
         int menuItemIndex = item.getItemId();
         String[] menuItems = getResources().getStringArray(R.array.activity_main_context_menu);
         String menuItemName = menuItems[menuItemIndex];
-        String listItemName = mGoalStrings.get(info.position);
+        //String listItemName = mGoalStrings.get(info.position);
         switch(menuItemName) {
             case "Edit":
-                dbid = getIdFromTitle(listItemName);
+//                dbid = getIdFromTitle(listItemName);
+                dbid = goal.getInt(0);
                 intent = new Intent(getActivity(), GoalEdit.class)
                         .putExtra("dbid", dbid);
                 startActivity(intent);
                 break;
             case "Delete":
-                dbid = getIdFromTitle(listItemName);
+//                dbid = getIdFromTitle(listItemName);
+                dbid = goal.getInt(0);
                 intent = new Intent(getActivity(), GoalDelete.class)
                         .putExtra("dbid", dbid);
                 startActivity(intent);

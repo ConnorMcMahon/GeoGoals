@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.util.Log;
 
@@ -38,6 +41,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
             GoalDatabaseHelper.KEY_STARTTIME,
             GoalDatabaseHelper.KEY_ENDDATE,
             GoalDatabaseHelper.KEY_ENDTIME,
+            GoalDatabaseHelper.KEY_CATEGORY
     };
 
     //correlate with GOAL_DETAIL_COLUMNS
@@ -47,7 +51,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int COLUMN_TIMEFRAME = 3;
     private static final int COLUMN_STARTDATE = 5;
     private static final int COLUMN_ENDDATE = 7;
-
+    private static final int COLUMN_CATEGORY = 9;
 
     private TextView mEditGoalTitle;
     private TextView mEditGoalComments;
@@ -55,6 +59,10 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
     private TextView mEditGoalTimeframe;
     private TextView mEditGoalStartDate;
     private TextView mEditGoalEndDate;
+    private RadioButton mRadioButtonGym;
+    private RadioButton mRadioButtonSchool;
+    private RadioButton mRadioButtonOther;
+    private ImageView mEditGoalCategoryImage;
 
     public GoalEditFragment() {
     }
@@ -93,7 +101,6 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.goal_enddate_edittext));
 
         setUpDateDialogs();
-
 
     }
 
@@ -145,6 +152,19 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         return endDate;
     }
 
+    public int getCategory() {
+        boolean gym = ((RadioButton) getActivity().findViewById(R.id.radio_gym)).isChecked();
+        if(gym)
+            return 1;
+        boolean school = ((RadioButton) getActivity().findViewById(R.id.radio_school)).isChecked();
+        if(school)
+            return 2;
+        boolean other = ((RadioButton) getActivity().findViewById(R.id.radio_other)).isChecked();
+        if(other)
+            return 3;
+        return -1;
+    }
+
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if(mDbID == -1 && getArguments() != null && getArguments().containsKey("dbid")) {
             mDbID = getArguments().getInt("dbid");
@@ -171,6 +191,7 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         String mGoalTimeframeText = cursor.getString(COLUMN_TIMEFRAME);
         String mGoalStartDateText = cursor.getString(COLUMN_STARTDATE);
         String mGoalEndDateText = cursor.getString(COLUMN_ENDDATE);
+        int mCategory = cursor.getInt(COLUMN_CATEGORY);
 
         Date startDate;
         Date endDate;
@@ -190,6 +211,10 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         mEditGoalTimeframe = ((TextView) getActivity().findViewById(R.id.goal_timeframe_editbox));
         mEditGoalStartDate = ((TextView) getActivity().findViewById(R.id.goal_startdate_edittext));
         mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.goal_enddate_edittext));
+        mRadioButtonGym = ((RadioButton) getActivity().findViewById(R.id.radio_gym));
+        mRadioButtonSchool = ((RadioButton) getActivity().findViewById(R.id.radio_school));
+        mRadioButtonOther = ((RadioButton) getActivity().findViewById(R.id.radio_other));
+        mEditGoalCategoryImage = ((ImageView) getActivity().findViewById(R.id.goal_edit_imageView));
 
         setUpDateDialogs();
 
@@ -199,6 +224,24 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         mEditGoalOccurrences.setText(mGoalOccurrencesText);
         mEditGoalStartDate.setText(mGoalStartDateText);
         mEditGoalEndDate.setText(mGoalEndDateText);
+
+        switch(mCategory) {
+            case 1:
+                mRadioButtonGym.setChecked(true);
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_gym);
+                break;
+            case 2:
+                mRadioButtonSchool.setChecked(true);
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_school);
+                break;
+            case 3:
+                mRadioButtonOther.setChecked(true);
+                mEditGoalCategoryImage.setImageResource(R.mipmap.category_other);
+                break;
+            default:
+                mRadioButtonGym.setChecked(true);
+                mEditGoalCategoryImage.setImageResource(R.mipmap.ic_launcher);
+        }
 
     }
 
