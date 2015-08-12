@@ -37,6 +37,7 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
             GoalDatabaseHelper.KEY_STARTTIME,
             GoalDatabaseHelper.KEY_ENDDATE,
             GoalDatabaseHelper.KEY_ENDTIME,
+            GoalDatabaseHelper.KEY_CURRENTOCCURENCES,
             GoalDatabaseHelper.KEY_CATEGORY
     };
 
@@ -47,7 +48,7 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
     private static final int COLUMN_COMMENTS = 4;
     private static final int COLUMN_STARTDATE = 5;
     private static final int COLUMN_ENDDATE = 7;
-    private static final int COLUMN_CATEGORY = 9;
+    private static final int COLUMN_CATEGORY = 10;
 
     private TextView mGoalNameTextView;
     private TextView mEditGoalComments;
@@ -123,7 +124,7 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
         String mGoalTimeframeText = cursor.getString(COLUMN_TIMEFRAME);
         String mGoalStartDateText = cursor.getString(COLUMN_STARTDATE);
         String mGoalEndDateText = cursor.getString(COLUMN_ENDDATE);
-        String mCategory = cursor.getString(COLUMN_CATEGORY);
+        int mCategory = cursor.getInt(COLUMN_CATEGORY);
 
         mGoalNameTextView = (TextView) getActivity().findViewById(R.id.fragment_goal_detail_title_text);
         mEditGoalComments = ((TextView) getActivity().findViewById(R.id.fragment_goal_detail_comment_text));
@@ -140,16 +141,16 @@ public class GoalDetailFragment extends Fragment implements LoaderManager.Loader
         mEditGoalTimeframe.setText(mGoalTimeframeText);
         mEditGoalStartDate.setText(mGoalStartDateText);
         mEditGoalEndDate.setText(mGoalEndDateText);
-        mEditGoalCategory.setText(mCategory);
+        mEditGoalCategory.setText("" + mCategory);
 
         switch(mCategory) {
-            case "1":
+            case 1:
                 mEditGoalCategoryImage.setImageResource(R.mipmap.category_gym);
                 break;
-            case "2":
+            case 2:
                 mEditGoalCategoryImage.setImageResource(R.mipmap.category_school);
                 break;
-            case "3":
+            case 3:
                 mEditGoalCategoryImage.setImageResource(R.mipmap.category_other);
                 break;
             default:

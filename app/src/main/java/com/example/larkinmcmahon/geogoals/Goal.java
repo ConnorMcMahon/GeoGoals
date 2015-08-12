@@ -227,6 +227,7 @@ public class Goal implements Parcelable {
         out.writeString(mStartTime);
         out.writeString(mEndTime);
         out.writeInt(mCurrentOccurrences);
+        out.writeInt(mCategory);
         out.writeTypedList(mLocations);
         out.writeList(mRadii);
         out.writeList(mGeofenceIDs);
