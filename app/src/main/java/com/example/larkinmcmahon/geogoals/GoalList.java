@@ -1,5 +1,6 @@
 package com.example.larkinmcmahon.geogoals;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -73,7 +75,7 @@ public class GoalList extends AppCompatActivity implements
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
 
         builder.addGeofences(mGeofenceList);
 
@@ -219,6 +221,23 @@ public class GoalList extends AppCompatActivity implements
 
         int id = goal.getID();
 
+        AlarmManager mgr=
+                (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent newIntent = new Intent(getApplicationContext(), CheckGoal.class);
+        newIntent.putExtra("dbid", id);
+        PendingIntent alarm = PendingIntent.getService(getApplicationContext(), 0, newIntent, 0);
+
+        Calendar today = Calendar.getInstance();
+
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        today.add(Calendar.DATE, goal.getTimeFrame());
+
+        mgr.set(AlarmManager.RTC_WAKEUP, today.getTimeInMillis(), alarm);
+
         ContentValues values = new ContentValues();
         values.put(GoalDatabaseHelper.KEY_ID,id);
         values.put(GoalDatabaseHelper.KEY_GOALNAME,goal.getTitle());
@@ -241,11 +260,6 @@ public class GoalList extends AppCompatActivity implements
 
 
         ArrayList<ContentValues> locationInformation = new ArrayList<ContentValues>();
-
-
-
-
-
 
         for(int i = 0; i < coords.size(); i++){
             LatLng coord = coords.get(i);
