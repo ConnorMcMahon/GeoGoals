@@ -49,6 +49,10 @@ public class GoalDetail extends AppCompatActivity {
                       .putExtra("dbid", dbid);
             startActivity(intent);
         }
+        else if (id == R.id.action_donate) {
+            Intent intent = new Intent(this, GeoDonationList.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

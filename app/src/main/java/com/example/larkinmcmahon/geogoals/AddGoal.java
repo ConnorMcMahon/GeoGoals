@@ -1,5 +1,6 @@
 package com.example.larkinmcmahon.geogoals;
 
+import android.media.Image;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
@@ -14,7 +15,9 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -72,6 +75,7 @@ public class AddGoal extends ActionBarActivity {
         }
 
         mGoal = new Goal("");
+
 
     }
 
@@ -179,6 +183,21 @@ public class AddGoal extends ActionBarActivity {
         setResult(RESULT_OK, intent);
         finish();
         Log.v(TAG, "Sending goal back to GoalList");
+    }
+
+    public void updateImageToGym(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_gym);
+    }
+
+    public void updateImageToSchool(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_school);
+    }
+
+    public void updateImageToOther(View view) {
+        ImageView img = (ImageView) findViewById(R.id.goal_edit_imageView);
+        img.setImageResource(R.mipmap.category_other);
     }
 
     public Goal getGoal(){

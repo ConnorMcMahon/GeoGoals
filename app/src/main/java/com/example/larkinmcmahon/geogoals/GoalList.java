@@ -181,11 +181,13 @@ public class GoalList extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_goal_detail, newFragment, "GOALEDITFRAGMENT")
                         .commit();
-//                getSupportFragmentManager().beginTransaction()
-//                        .add(R.id.fragment_goal_edit,newFragment,"editTag")
-//                        .commit();
+
                 detailViewShowing = !detailViewShowing;
                 invalidateOptionsMenu();
+            }
+            else if (id == R.id.action_donate) {
+                Intent intent = new Intent(this, GeoDonationList.class);
+                startActivity(intent);
             }
             else if(id == R.id.submit_goal) {
                 FragmentManager fm = getSupportFragmentManager();

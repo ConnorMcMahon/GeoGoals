@@ -42,9 +42,6 @@
         <service
             android:name="com.example.larkinmcmahon.geogoals.GeofenceService"
             android:enabled="true" />
-        <service
-            android:name="com.example.larkinmcmahon.geogoals.CheckGoal"
-            android:enabled="true" />
 
         <activity
             android:name="com.example.larkinmcmahon.geogoals.GoalList"

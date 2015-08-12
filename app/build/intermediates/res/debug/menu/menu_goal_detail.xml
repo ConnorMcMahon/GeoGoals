@@ -5,6 +5,9 @@
     tools:context="com.example.larkinmcmahon.geogoals.GoalDetail">
     <item android:id="@+id/action_editGoal"
         android:title="Edit"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_donate"
+        android:title="Donate"
         app:showAsAction="never">
     </item>
 </menu><!-- From: file:/Users/djflash/GeoGoals/app/src/main/res/menu/menu_goal_detail.xml -->

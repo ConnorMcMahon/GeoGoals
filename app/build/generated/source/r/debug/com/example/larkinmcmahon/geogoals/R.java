@@ -2009,7 +2009,7 @@ containing a value of this type.
     }
     public static final class id {
         public static final int action0=0x7f0e00b5;
-        public static final int action_add_goal=0x7f0e00c4;
+        public static final int action_add_goal=0x7f0e00c5;
         public static final int action_bar=0x7f0e0057;
         public static final int action_bar_activity_content=0x7f0e0000;
         public static final int action_bar_container=0x7f0e0056;
@@ -2019,6 +2019,7 @@ containing a value of this type.
         public static final int action_bar_title=0x7f0e003a;
         public static final int action_context_bar=0x7f0e0058;
         public static final int action_divider=0x7f0e00b8;
+        public static final int action_donate=0x7f0e00c4;
         public static final int action_editGoal=0x7f0e00c3;
         public static final int action_menu_divider=0x7f0e0002;
         public static final int action_menu_presenter=0x7f0e0003;

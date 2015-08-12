@@ -99,7 +99,8 @@ public class GoalEditFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
         mEditGoalStartDate = ((TextView) getActivity().findViewById(R.id.goal_startdate_edittext));
         mEditGoalEndDate = ((TextView) getActivity().findViewById(R.id.goal_enddate_edittext));
-
+        ImageView imageView = (ImageView) getActivity().findViewById(R.id.goal_edit_imageView);
+        imageView.setImageResource(R.mipmap.ic_launcher);
         setUpDateDialogs();
 
     }

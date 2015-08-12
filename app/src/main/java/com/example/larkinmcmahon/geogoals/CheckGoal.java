@@ -33,7 +33,8 @@ public class CheckGoal extends IntentService {
             if(goal.getCurrentOccurences() >= goal.getOccurance()){
                 //succeeded!
             } else {
-                //failed!
+                Intent newIntent = new Intent(this, GeoDonationList.class);
+                startActivity(newIntent);
             }
 
             AlarmManager mgr=

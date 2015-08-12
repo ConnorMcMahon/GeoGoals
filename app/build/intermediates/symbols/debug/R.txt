@@ -561,7 +561,7 @@ int drawable notification_template_icon_bg 0x7f020081
 int drawable powered_by_google_dark 0x7f02007f
 int drawable powered_by_google_light 0x7f020080
 int id action0 0x7f0e00b5
-int id action_add_goal 0x7f0e00c4
+int id action_add_goal 0x7f0e00c5
 int id action_bar 0x7f0e0057
 int id action_bar_activity_content 0x7f0e0000
 int id action_bar_container 0x7f0e0056
@@ -571,6 +571,7 @@ int id action_bar_subtitle 0x7f0e003b
 int id action_bar_title 0x7f0e003a
 int id action_context_bar 0x7f0e0058
 int id action_divider 0x7f0e00b8
+int id action_donate 0x7f0e00c4
 int id action_editGoal 0x7f0e00c3
 int id action_menu_divider 0x7f0e0002
 int id action_menu_presenter 0x7f0e0003
