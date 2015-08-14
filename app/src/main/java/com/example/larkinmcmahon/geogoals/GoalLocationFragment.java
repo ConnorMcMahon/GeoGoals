@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,46 +39,52 @@ import java.util.Locale;
 
 /**
  * Created by connor on 7/30/15.
+ * Cleaned and commented on 8/12/15
  */
 public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
+    //constants
+    private final static String TAG = "GOAL_LOCATION_FRAGMENT";
+    private final static int RADIUS = 1000*5; //5 km, should probably eventually be smaller
+    private final static double SEARCH_DISTANCE = .3; //Around 30 km
+
+    //private variables
     private SupportMapFragment fragment;
     private Context mContext;
     private GeofenceService mGeofenceService;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private String TAG = "GOAL_LOCATION_FRAGMENT";
     private EditText mSearchBox;
-    private View mRootView;
     private List<Marker> mMarkers;
-    final private double SEARCH_DISTANCE = .3; //Around 30 km
     private List<LatLng> mCoords;
-    final private int RADIUS = 1000*5;
-    private List<Integer> mIds;
-
     private ServiceConnection mConnection;
 
     @Override
     public boolean onMarkerClick(Marker marker){
+        //if tentative location, make an actual geofence location
         if(marker.getAlpha()==.5){
             LatLng coords = marker.getPosition();
-            Goal goal = ((GoalLocation) mContext).getGoal();
-            goal.addGeofence(coords, 50);
+            Goal goal = ((AddGoal) mContext).getGoal();
             marker.setAlpha((float) 1.0);
-        } else {
-            marker.remove();
+            goal.addGeofence(coords, RADIUS);
+            //add to list storage
+            mCoords.add(coords);
+            mMarkers.add(marker);
         }
-        return true;
+        return false;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //instantiate important variables
         mContext = getActivity();
-        mMarkers = new ArrayList<Marker>();
-        mCoords = new ArrayList<LatLng>();
+        mMarkers = new ArrayList<>();
+        mCoords = new ArrayList<>();
 
-        mRootView = inflater.inflate(R.layout.fragment_goal_location, container, false);
 
+        View mRootView = inflater.inflate(R.layout.fragment_goal_location, container, false);
+
+        //hide keyboard on focus change
         mSearchBox = (EditText) mRootView.findViewById(R.id.search);
         mSearchBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -123,15 +128,11 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     }
 
     public List<Integer> getRadii(){
-        List<Integer> radii = new ArrayList<Integer>();
+        List<Integer> radii = new ArrayList<>();
         for(int i = 0; i < mCoords.size(); i++){
             radii.add(RADIUS);
         }
         return radii;
-    }
-
-    public List<Integer> getIds() {
-        return mIds;
     }
 
     private void hideKeyboard(View view) {
@@ -142,43 +143,58 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+
         fragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+
         if(fragment == null) {
+            //create new version of the map fragment and replace whatever is currently there
             fragment = SupportMapFragment.newInstance();
             getFragmentManager().beginTransaction().replace(R.id.map, fragment).commit();
         }
 
+        //start geofence service
+        Intent intent = new Intent(getActivity().getApplicationContext(), GeofenceService.class);
+        mContext.startService(intent);
 
-        Intent intent = new Intent(mContext, GeofenceService.class);
-        mMap = fragment.getMap();
-
+        //connect to the service
         mConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service){
-
                 Log.i(TAG, "Connected to service.");
+
+                //bind the service
                 GeofenceService.GeofenceBinder binder = (GeofenceService.GeofenceBinder) service;
                 mGeofenceService = binder.getService();
 
-
+                //check location
                 Location lastLocation = mGeofenceService.getLastLocation();
+
                 if (lastLocation != null) {
+                    //last location exists, so move to coord object for use
                     LatLng coords = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
+                    //create camera position and camera update to move map to current location
                     CameraPosition camPos = new CameraPosition.Builder()
                             .target(coords)
                             .zoom(17)
                             .bearing(lastLocation.getBearing())
                             .build();
-
                     CameraUpdate zoomIn = CameraUpdateFactory.newCameraPosition(camPos);
+
+                    //get the map and zoom to current location
                     mMap = fragment.getMap();
                     mMap.moveCamera(zoomIn);
-                    setUpMap();
 
+                    //add click listener
+                    setUpMap();
                 } else {
+                    //Could not properly get location services
+
+                    //display toast to aler the user of this
                     Toast noLocationToast = Toast.makeText(getActivity(), "Couldn't connect to location services!", Toast.LENGTH_LONG);
                     noLocationToast.show();
+
+                    //redirect to goallist activity
                     Intent backToHome = new Intent(getActivity(), GoalList.class);
                     startActivity(backToHome);
                 }
@@ -190,7 +206,8 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                 Log.i(TAG, "Disconnected from service.");
             }
         };
-        mContext.startService(intent);
+
+        //bind the service and the connection
         mContext.bindService(intent, mConnection, 0);
 
 
@@ -199,7 +216,9 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     @Override
     public void onResume() {
         super.onResume();
-        if(mMap ==null){
+
+        if(mMap == null){
+            //get map from the fragment and set up click listeners
             mMap = fragment.getMap();
             setUpMap();
         }
@@ -208,7 +227,6 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        mContext.unbindService(mConnection);
     }
 
 
@@ -220,8 +238,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-
-
+        //add click listener
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng coords) {
@@ -234,6 +251,8 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                 mMarkers.add(marker);
             }
         });
+
+        mMap.setOnMarkerClickListener(this);
 
     }
 
@@ -265,7 +284,7 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                         double upperRightLat = Math.min(180, latitude + SEARCH_DISTANCE);
                         results = geocoder.getFromLocationName(toSearch, 5, lowerLeftLat, lowerLeftLong, upperRightLat, upperRightLong);
                     } else {
-                        geocoder.getFromLocationName(toSearch, 5);
+                        results = geocoder.getFromLocationName(toSearch, 5);
                     }
 
                     if (results.size() == 0) {
@@ -284,9 +303,11 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
         @Override
         protected void onPostExecute(Boolean result){
             Log.v(TAG, "found " + results.size() + " locations");
+            //Add markers for each of the results
             for(int i = 0; i < results.size(); i++){
                 Address address = results.get(i);
                 LatLng coords = new LatLng(address.getLatitude(), address.getLongitude());
+                //add transluscent markers to indicate these locations
                 if(mMap != null){
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(coords)
@@ -294,14 +315,19 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                     mMarkers.add(marker);
                 }
             }
+
+            //create a bound around the markers and zoom to that level
             if (mMarkers.size() > 0) {
+                //create a bounds for the markers and add all of the markers
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Marker marker : mMarkers) {
                     builder.include(marker.getPosition());
                 }
                 LatLngBounds bounds = builder.build();
 
-                int padding = 10; //padding from edge of map
+                int padding = 20; //padding from edge of map
+
+                //update the map view
                 CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 mMap.animateCamera(update);
             }

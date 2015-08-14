@@ -116,6 +116,7 @@ public class GoalList extends AppCompatActivity implements
             values.put(GoalDatabaseHelper.KEY_ENDDATE,newGoal.getEndDate());
             values.put(GoalDatabaseHelper.KEY_STARTTIME,newGoal.getStartTime());
             values.put(GoalDatabaseHelper.KEY_ENDTIME,newGoal.getEndTime());
+            values.put(GoalDatabaseHelper.KEY_CURRENTOCCURENCES, newGoal.getCurrentOccurences());
 
 //            values.put(GoalDatabaseHelper.KEY_LAT),
             Uri insertVal = getContentResolver().insert(GoalsProvider.CONTENT_URI,values);
