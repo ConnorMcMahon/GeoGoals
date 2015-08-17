@@ -4,7 +4,7 @@
     <string name="title_activity_goal_form">GoalForm</string>
     <string name="title_activity_goal_location">Map</string>
     <string name="new_goal_button">Add goal</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve">YOUR_KEY_HERE</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyDf2k7Cf2i-d83jUvvFF9uVF4EMESntJHE</string>
     <string name="add_locations_button">Add Locations</string>
     <string name="title_hint">Title</string>
     <string name="location_search_hint">Search for Locations</string>
