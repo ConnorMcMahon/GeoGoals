@@ -290,6 +290,14 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
                     if (results.size() == 0) {
                         return false;
                     }
+                } else {
+                    //display toast to aler the user of this
+                    Toast noLocationToast = Toast.makeText(getActivity(), "Couldn't connect to location services!", Toast.LENGTH_LONG);
+                    noLocationToast.show();
+
+                    //redirect to goallist activity
+                    Intent backToHome = new Intent(getActivity(), GoalList.class);
+                    startActivity(backToHome);
                 }
 
 
@@ -302,6 +310,9 @@ public class GoalLocationFragment extends Fragment implements GoogleMap.OnMarker
 
         @Override
         protected void onPostExecute(Boolean result){
+            if(results == null){
+                return;
+            }
             Log.v(TAG, "found " + results.size() + " locations");
             //Add markers for each of the results
             for(int i = 0; i < results.size(); i++){
